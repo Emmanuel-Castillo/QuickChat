@@ -1,7 +1,10 @@
 import React from "react";
 import assets, { imagesDummyData } from "../assets/assets";
 
-const RightSidebar = ({ selectedUser }) => {
+type RightSidebarProps = {
+  selectedUser: any
+}
+const RightSidebar = ({ selectedUser }: RightSidebarProps) => {
   return (
     selectedUser && (
       <div

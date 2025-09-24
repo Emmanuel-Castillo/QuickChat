@@ -9,7 +9,7 @@ const LoginPage = () => {
   const [bio, setBio] = useState("");
   const [isDataSubmitted, setIsDataSubmitted] = useState(false);
 
-  const onSubmitHandler = (event) => {
+  const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (currState === "Sign up" && !isDataSubmitted) {
       setIsDataSubmitted(true);

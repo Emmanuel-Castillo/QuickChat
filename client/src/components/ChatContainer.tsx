@@ -2,8 +2,12 @@ import React, { useEffect, useRef } from "react";
 import assets, { messagesDummyData } from "../assets/assets";
 import { formatMessageTime } from "../lib/utils";
 
-const ChatContainer = ({ selectedUser, setSelectedUser }) => {
-  const scrollEnd = useRef();
+type ChatContainerProps = {
+  selectedUser: any;
+  setSelectedUser: React.Dispatch<React.SetStateAction<any>>;
+};
+const ChatContainer = ({ selectedUser, setSelectedUser }: ChatContainerProps) => {
+  const scrollEnd = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (scrollEnd.current) {
       scrollEnd.current.scrollIntoView({ behavior: "smooth" });

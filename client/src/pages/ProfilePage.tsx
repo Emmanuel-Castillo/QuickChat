@@ -3,12 +3,12 @@ import { useNavigate } from "react-router-dom";
 import assets from "../assets/assets";
 
 const ProfilePage = () => {
-  const [selectedImg, setSelectedImg] = useState(null);
+  const [selectedImg, setSelectedImg] = useState<File | null>(null);
   const navigate = useNavigate();
   const [name, setName] = useState("Martin Johnson");
   const [bio, setBio] = useState("Hi everyone, I am using QuickChat");
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     navigate("/");
   };
@@ -25,7 +25,7 @@ const ProfilePage = () => {
             className="flex items-center gap-3 cursor-pointer"
           >
             <input
-              onChange={(e) => setSelectedImg(e.target.files[0])}
+              onChange={(e) => setSelectedImg(e.target!.files![0])}
               type="file"
               id="avatar"
               accept=".png, .jpg, .jpeg"

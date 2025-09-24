@@ -2,7 +2,11 @@ import React from "react";
 import assets, { userDummyData } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 
-const Sidebar = ({ selectedUser, setSelectedUser }) => {
+type SidebarProps = {
+  selectedUser: any
+  setSelectedUser: React.Dispatch<React.SetStateAction<any>>
+}
+const Sidebar = ({ selectedUser, setSelectedUser }: SidebarProps) => {
   const navigate = useNavigate();
   return (
     <div
