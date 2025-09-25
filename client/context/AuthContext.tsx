@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }: {children: React.ReactElement}) => {
     }
 
     // Login function to handle user authentication and socket connection
-    const login = async (state: 'signup' | 'login', credentials: Object) => {
+    const login = async (state: 'signup' | 'login', credentials: any) => {
         try {
             const { data } = await axios.post(`/api/auth/${state}`, credentials)
             if (data.success) {
@@ -96,8 +96,8 @@ export const AuthProvider = ({ children }: {children: React.ReactElement}) => {
     useEffect(() => {
         if (token) {
             axios.defaults.headers.common["token"] = token
+            checkAuth()
         }
-        checkAuth()
     }, [])
 
     const value = {
