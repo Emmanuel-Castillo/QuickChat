@@ -1,6 +1,7 @@
 import React from "react";
 import assets, { userDummyData } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 type SidebarProps = {
   selectedUser: any
@@ -8,6 +9,9 @@ type SidebarProps = {
 }
 const Sidebar = ({ selectedUser, setSelectedUser }: SidebarProps) => {
   const navigate = useNavigate();
+  const { logout } = useAuth()
+
+  
   return (
     <div
       className={`bg-[#8185B2]/10 h-full p-5 rounder-r-xl overflow-y-scroll text-white ${
@@ -32,7 +36,7 @@ const Sidebar = ({ selectedUser, setSelectedUser }: SidebarProps) => {
               </p>
               <hr className="my-2 border-t border-gray-500" />
               <p
-                onClick={() => navigate("/login")}
+                onClick={() => logout()}
                 className="cursor-pointer text-sm"
               >
                 Logout
