@@ -3,7 +3,7 @@ import assets from "../assets/assets";
 import { useAuth } from "../../context/AuthContext";
 
 const LoginPage = () => {
-  const [currState, setCurrState] = useState<"signup" | "login">("signup");
+  const [currState, setCurrState] = useState<"signup" | "login">("login");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,7 +31,7 @@ const LoginPage = () => {
         className="border-2 bg-white/8 text-white border-gray-500 p-6 flex flex-col gap-6 rounded-lg shadow-lg"
       >
         <h2 className="font-medium text-2xl flex justify-between items-center">
-          {currState}
+          {currState === "signup" ? "Sign Up" : "Login"}
           {isDataSubmitted && (
             <img
               onClick={() => setIsDataSubmitted(false)}

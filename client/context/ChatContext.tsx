@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
 import toast from "react-hot-toast";
 
@@ -7,11 +7,11 @@ interface ChatContextProps {
   users: any[];
   selectedUser: any | null;
   getUsers: () => void;
-  setMessages: React.Dispatch<React.SetStateAction<any[]>>;
   sendMessage: (messageData: any) => void;
   setSelectedUser: React.Dispatch<any>;
-  unseenMessages: {};
+  unseenMessages: any;
   setUnseenMessages: React.Dispatch<React.SetStateAction<{}>>;
+  getMessages: (userId: number) => void;
 }
 export const ChatContext = createContext<ChatContextProps | undefined>(
   undefined
@@ -72,6 +72,7 @@ export const ChatProvider = ({
   };
 
   // Function to subscribe to messages for selected user
+  // Get messages in real-time
   const subscribeToMessages = async () => {
     if (!socket) return;
     socket.on("newMessage", (newMessage: any) => {
@@ -114,11 +115,19 @@ export const ChatProvider = ({
     users,
     selectedUser,
     getUsers,
-    setMessages,
     sendMessage,
     setSelectedUser,
     unseenMessages,
     setUnseenMessages,
+    getMessages
   };
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
+};
+
+export const useChat = () => {
+  const context = useContext(ChatContext);
+  if (context === undefined) {
+    throw new Error("useAuth must be used within a ChatContextProvider");
+  }
+  return context;
 };

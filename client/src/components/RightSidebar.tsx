@@ -1,10 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import assets, { imagesDummyData } from "../assets/assets";
+import { useChat } from "../../context/ChatContext";
+import { useAuth } from "../../context/AuthContext";
 
-type RightSidebarProps = {
-  selectedUser: any
-}
-const RightSidebar = ({ selectedUser }: RightSidebarProps) => {
+const RightSidebar = () => {
+  const { selectedUser, messages } = useChat();
+  const { logout, onlineUsers } = useAuth();
+
+  const [msgImages, setMsgImages] = useState<any[]>([]);
+
+  // Get all the images from the messagese and set them to state
+  useEffect(() => {
+    setMsgImages(messages.filter((msg) => msg.image).map((msg) => msg.image));
+  }, [messages]);
   return (
     selectedUser && (
       <div
@@ -19,7 +27,9 @@ const RightSidebar = ({ selectedUser }: RightSidebarProps) => {
             className="w-20 aspect-[1/1] rounded-full"
           />
           <h1 className="px-10 text-xl font-medium mx-auto flex items-center gap-2">
-            <p className="w-2 h-2 rounded-full bg-green-500"></p>
+            {onlineUsers.includes(selectedUser._id) && (
+              <p className="w-2 h-2 rounded-full bg-green-500"></p>
+            )}
             {selectedUser.fullName}
           </h1>
           <p className="px-10 mx-auto">{selectedUser.bio}</p>
@@ -30,7 +40,7 @@ const RightSidebar = ({ selectedUser }: RightSidebarProps) => {
         <div className="px-5 text-xs">
           <p>Media</p>
           <div className="mt-2 max-h-[200px] overflow-y-scroll grid grid-cols-2 gap-4 opacity-80">
-            {imagesDummyData.map((url, index) => (
+            {msgImages.map((url, index) => (
               <div
                 key={index}
                 onClick={() => window.open(url)}
@@ -42,7 +52,10 @@ const RightSidebar = ({ selectedUser }: RightSidebarProps) => {
           </div>
         </div>
 
-        <button className="absolute bottom-5 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-400 to-violet-600 text-white border-none text-sm font-light p-2 px-20 rounded-full cursor-pointer">
+        <button
+          onClick={logout}
+          className="absolute bottom-5 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-400 to-violet-600 text-white border-none text-sm font-light p-2 px-20 rounded-full cursor-pointer"
+        >
           Logout
         </button>
       </div>
