@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 
 const ChatContainer = () => {
   const scrollEnd = useRef<HTMLDivElement>(null);
-  const { selectedUser, setSelectedUser, messages, sendMessage, getMessages } =
+  const { selectedUser, setSelectedUser, messages, sendMessage, getMessages, viewRightSidebarMobile, setViewRightSidebarMobile } =
     useChat();
   const { authUser, onlineUsers } = useAuth();
 
@@ -50,8 +50,10 @@ const ChatContainer = () => {
     }
   }, [messages]);
 
-  return selectedUser ? (
-    <div className="h-full overflow-scroll relative backdrop-blur-lg">
+  return selectedUser ?  (
+    <div className={`h-full overflow-scroll relative backdrop-blur-lg ${
+        viewRightSidebarMobile ? "max-lg:hidden" : "block"
+      }`}>
       {/* header */}
       <div className="flex items-center gap-3 py-3 mx-4 border-b border-stone-500">
         <img
@@ -65,13 +67,17 @@ const ChatContainer = () => {
             <span className="w-2 h-2 rounded-full bg-green-500"></span>
           )}
         </p>
+
+        {/* Only show back arrow when screen is less than md size. Sets selected user to null, making the App only render the Sidebar */}
         <img
           onClick={() => setSelectedUser(null)}
           src={assets.arrow_icon}
           alt=""
-          className="md:hidden max-w-7"
+          className="lg:hidden max-w-7"
         />
-        <img src={assets.help_icon} alt="" className="max-md:hidden max-w-5" />
+
+        {/* Only show back arrow when screen is less than md size. Sets selected user to null, making the App only render the RightSidebar */}
+        <img onClick={() => setViewRightSidebarMobile(true)} src={assets.help_icon} alt="" className="lg:hidden max-w-5" />
       </div>
       {/* chat area */}
       <div className="flex flex-col h-[calc(100%-120px)] overflow-y-scroll p-3 pb-6">

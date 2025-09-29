@@ -12,6 +12,9 @@ interface ChatContextProps {
   unseenMessages: any;
   setUnseenMessages: React.Dispatch<React.SetStateAction<{}>>;
   getMessages: (userId: number) => void;
+
+  viewRightSidebarMobile: boolean;
+  setViewRightSidebarMobile: React.Dispatch<React.SetStateAction<boolean>>
 }
 export const ChatContext = createContext<ChatContextProps | undefined>(
   undefined
@@ -25,6 +28,7 @@ export const ChatProvider = ({
   const [messages, setMessages] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
   const [selectedUser, setSelectedUser] = useState<any | null>(null);
+  const [viewRightSidebarMobile, setViewRightSidebarMobile] = useState(false)
   const [unseenMessages, setUnseenMessages] = useState({});
 
   const { socket, axios } = useAuth();
@@ -119,7 +123,9 @@ export const ChatProvider = ({
     setSelectedUser,
     unseenMessages,
     setUnseenMessages,
-    getMessages
+    getMessages,
+    viewRightSidebarMobile,
+    setViewRightSidebarMobile
   };
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
 };

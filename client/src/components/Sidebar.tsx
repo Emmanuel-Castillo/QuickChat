@@ -29,18 +29,18 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`bg-[#8185B2]/10 h-full p-5 rounder-r-xl overflow-y-scroll text-white ${
-        selectedUser ? "max-md:hidden" : ""
+      className={`bg-[#8185B2]/10 h-full p-5 rounded-r-xl overflow-y-scroll text-white ${
+        selectedUser ? "max-lg:hidden" : "block"
       }`}
     >
       <div className="pb-5">
         <div className="flex justify-between items-center">
-          <img src={assets.logo} alt="logo" className="max-w-40" />
+          <img src={assets.logo} alt="logo" className="max-w-30 object-scale-down" />
           <div className="relative py-2 group">
             <img
               src={assets.menu_icon}
               alt="menu"
-              className="max-h-5 cursor-pointer"
+              className="h-5 cursor-pointer"
             />
             <div className="absolute top-full right-0 z-20 w-32 p-5 rounded-md bg-[#282142] border border-gray-600 text-gray-100 hidden group-hover:block">
               <p
@@ -89,7 +89,7 @@ const Sidebar = () => {
               alt=""
               className="w-[35px] aspect-[1/1] rounded-full"
             />
-            <div className="flex flex-col leading-5">
+            <div className="flex flex-col leading-5 truncate">
               <p>{user.fullName}</p>
               {onlineUsers.includes(user._id) ? (
                 <span className="text-green-400 text-xs">Online</span>

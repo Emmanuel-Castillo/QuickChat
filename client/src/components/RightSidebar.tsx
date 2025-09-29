@@ -4,7 +4,11 @@ import { useChat } from "../../context/ChatContext";
 import { useAuth } from "../../context/AuthContext";
 
 const RightSidebar = () => {
-  const { selectedUser, messages } = useChat();
+  const {
+    selectedUser,
+    messages,
+  } = useChat();
+  const { setViewRightSidebarMobile, viewRightSidebarMobile } = useChat()
   const { logout, onlineUsers } = useAuth();
 
   const [msgImages, setMsgImages] = useState<any[]>([]);
@@ -17,9 +21,15 @@ const RightSidebar = () => {
     selectedUser && (
       <div
         className={`bg-[#8185B2]/10 text-white w-full relative overflow-y-scroll ${
-          selectedUser ? "max-md:hidden" : ""
-        }`}
+        !viewRightSidebarMobile ? "max-lg:hidden" : "block"
+      }`}
       >
+        <img
+          onClick={() => setViewRightSidebarMobile(false)}
+          src={assets.arrow_icon}
+          alt=""
+          className="lg:hidden max-w-7 absolute top-4 left-4"
+        />
         <div className="pt-16 flex flex-col items-center gap-2 text-xs font-light mx-auto">
           <img
             src={selectedUser?.profilePic || assets.avatar_icon}
@@ -54,7 +64,7 @@ const RightSidebar = () => {
 
         <button
           onClick={logout}
-          className="absolute bottom-5 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-400 to-violet-600 text-white border-none text-sm font-light p-2 px-20 rounded-full cursor-pointer"
+          className="absolute bottom-5 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-400 to-violet-600 text-white border-none text-sm font-light p-2 px-15 rounded-full cursor-pointer"
         >
           Logout
         </button>
