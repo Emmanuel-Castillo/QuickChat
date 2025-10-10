@@ -6,6 +6,8 @@ import { connectDB } from "./lib/db.js";
 import userRouter from "./routes/userRoutes.js";
 import messageRouter from "./routes/messageRoutes.js";
 import { Server } from "socket.io";
+import groupRouter from "./routes/groupRoutes.js";
+import groupMsgRouter from "./routes/groupMessageRoutes.js";
 
 // Create Express app and HTTP server
 const app = express();
@@ -34,6 +36,12 @@ io.on("connection", (socket) => {
     delete userSocketMap[userId];
     io.emit("getOnlineUser", Object.keys(userSocketMap));
   });
+
+  // Client-side emit signal to join room using name
+  socket.on("joinRoom", (roomName) => {
+    socket.join(roomName)
+    console.log(`${userId} connected to room: ${roomName}`)
+  })
 });
 
 // Middleware setup
@@ -45,6 +53,8 @@ app.use(cors());
 app.use("/api/status", (req, res) => res.send("Server is live"));
 app.use("/api/auth", userRouter);
 app.use("/api/messages", messageRouter);
+app.use("/api/groups", groupRouter)
+app.use("/api/group-messages", groupMsgRouter)
 
 // Connect to MongoDB
 console.log("Connecting to database...");

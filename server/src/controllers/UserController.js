@@ -61,7 +61,7 @@ export const login = async (req, res) => {
 
 // Controller to check if user is authenticated
 export const checkAuth = (req, res) => {
-  res.json({ success: true, user: req.get("user") });
+  res.json({ success: true, user: req.user });
 };
 
 // Controller to update user profile details
@@ -102,3 +102,20 @@ export const updateProfile = async (req, res) => {
     res.json({success: false, user: error.message})
   }
 };
+
+// Controller to get User
+export const getUser = async (req, res) => {
+  try {
+    const {id} = req.params
+    const user = await User.findById(id)
+
+    if (!user) 
+      throw new Error("User not found")
+    
+    res.json({success: true, user: user})
+
+  } catch (error) {
+    console.error(error)
+    res.json({success: false, error: error.message})
+  }
+}

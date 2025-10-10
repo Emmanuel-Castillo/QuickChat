@@ -3,6 +3,9 @@ import assets from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useChat } from "../../context/ChatContext";
+import UserBar from "./sidebar-ui/UserBar";
+import GroupBar from "./sidebar-ui/GroupBar";
+import FilterButton from "./sidebar-ui/FilterButton";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -10,32 +13,56 @@ const Sidebar = () => {
   const {
     getUsers,
     users,
-    selectedUser,
-    setSelectedUser,
+    selectedChat,
+    setSelectedChat,
     unseenMessages,
     setUnseenMessages,
+    groups,
+    getGroups,
+    unseenGroupMessages,
+    setUnseenGroupMessages,
   } = useChat();
 
   const [input, setInput] = useState<string>();
+  const [filter, setFilter] = useState<"user" | "group">("user");
   const filteredUsers = input
     ? users.filter((user) =>
         user.fullName.toLowerCase().includes(input.toLowerCase())
       )
     : users;
+  const filteredGroups = input
+    ? groups.filter((group) =>
+        group.name.toLowerCase().includes(input.toLowerCase())
+      )
+    : groups;
 
+  // When onlineUsers (list of online User ids) retrieved from AuthContext, request Users and Groups
   useEffect(() => {
     getUsers();
   }, [onlineUsers]);
 
+  useEffect(() => {
+    getGroups();
+  }, []);
+
   return (
     <div
-      className={`bg-[#8185B2]/10 h-full p-5 rounded-r-xl overflow-y-scroll text-white ${
-        selectedUser ? "max-lg:hidden" : "block"
+      className={`bg-[#8185B2]/10 flex flex-col gap-y-4 h-full p-5 rounded-l-2xl overflow-y-scroll text-white ${
+        selectedChat  ? "max-lg:hidden" : "block"
       }`}
     >
-      <div className="pb-5">
+      {/* HEADER */}
+      <div>
         <div className="flex justify-between items-center">
-          <img src={assets.logo} alt="logo" className="max-w-30 object-scale-down" />
+
+          {/* LOGO */}
+          <img
+            src={assets.logo}
+            alt="logo"
+            className="max-w-50 object-scale-down"
+          />
+
+          {/* EDIT PROFILE AND LOGOUT BUTTONS */}
           <div className="relative py-2 group">
             <img
               src={assets.menu_icon}
@@ -57,6 +84,7 @@ const Sidebar = () => {
           </div>
         </div>
 
+        {/* SEARCH INPUT */}
         <div className="bg-[#282142] rounded-full flex items-center gap-2 py-3 px-4 mt-5">
           <img src={assets.search_icon} alt="search" className="w-3" />
           <input
@@ -69,41 +97,63 @@ const Sidebar = () => {
         </div>
       </div>
 
-      <div className="flex flex-col">
-        {filteredUsers.map((user, index) => (
-          <div
-            onClick={() => {
-              setSelectedUser(user);
-              setUnseenMessages((prev) => ({
-                ...prev,
-                [user._id]: 0,
-              }));
-            }}
-            key={index}
-            className={`relative flex items-center gap-2 p-2 pl-4 rounded cursor-pointer max-sm:text-sm ${
-              selectedUser?._id === user._id && "bg-[#282142]/50"
-            }`}
-          >
-            <img
-              src={user?.profilePic || assets.avatar_icon}
-              alt=""
-              className="w-[35px] aspect-[1/1] rounded-full"
-            />
-            <div className="flex flex-col leading-5 truncate">
-              <p>{user.fullName}</p>
-              {onlineUsers.includes(user._id) ? (
-                <span className="text-green-400 text-xs">Online</span>
-              ) : (
-                <span className="text-neutal-400 text-xs">Offline</span>
-              )}
-            </div>
-            {unseenMessages[user._id] > 0 && (
-              <p className="absolute top-4 right-4 text-xs h-5 w-5 flex justify-center items-center rounded-full bg-violet-500/50">
-                {unseenMessages[user._id]}
-              </p>
-            )}
-          </div>
-        ))}
+      {/* LIST */}
+      <div className="flex-1 flex flex-col ">
+
+        {/* FILTER BUTTONS */}
+        <div>
+          <FilterButton
+            isSelected={filter === "user"}
+            onClickButton={() => setFilter("user")}
+          />
+          <FilterButton
+            isSelected={filter === "group"}
+            onClickButton={() => setFilter("group")}
+          />
+        </div>
+
+        {/* USER/GROUP LIST */}
+        <div className="flex-1 flex flex-col border-2 border-[#282142]/50 rounded-b-xl">
+          {filter === "user" &&
+            filteredUsers.map((user, index) => (
+              <UserBar
+                index={index}
+                user={user}
+                isSelectedUser={selectedChat?._id === user._id}
+                isOnlineUser={onlineUsers.includes(user._id)}
+                unseenMsgCount={unseenMessages[user._id]}
+                onClickUser={() => {
+                  setSelectedChat({...user, type: 'user'});
+                  setUnseenMessages((prev) => ({
+                    ...prev,
+                    [user._id]: 0,
+                  }));
+                }}
+              />
+            ))}
+          {filter === "group" &&
+            filteredGroups.map((group, index) => (
+              <GroupBar
+                group={group}
+                index={index}
+                isSelectedGroup={selectedChat?._id === group._id}
+                onClickGroup={() => {
+                  setSelectedChat({...group, type: 'group'});
+                  setUnseenGroupMessages((prev) => ({
+                    ...prev,
+                    [group._id]: 0,
+                  }));
+                }}
+              />
+            ))}
+        </div>
+
+        {/* JOIN GROUP BUTTON */}
+        {filter === "group" && (
+          <button className="bg-gradient-to-r from-purple-400 to-violet-600 text-white border-none text-sm font-light p-2 px-15 rounded-full cursor-pointer mt-4">
+            Join Group
+          </button>
+        )}
       </div>
     </div>
   );

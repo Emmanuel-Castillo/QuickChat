@@ -47,11 +47,12 @@ export const AuthProvider = ({
     try {
       const { data } = await axios.post(`/api/auth/${state}`, credentials);
       if (data.success) {
+        console.log(data)
         setAuthUser(data.userData);
         connectSocket(data.userData);
+        localStorage.setItem("token", data.token);
         axios.defaults.headers.common["token"] = data.token;
         setToken(data.token);
-        localStorage.setItem("token", data.token);
         toast.success(data.message);
       } else {
         toast.error(data.message);
@@ -94,6 +95,7 @@ export const AuthProvider = ({
     newSocket.connect();
     setSocket(newSocket);
 
+    // Receiving online users from backend
     newSocket.on("getOnlineUsers", (userIds) => {
       setOnlineUsers(userIds);
     });

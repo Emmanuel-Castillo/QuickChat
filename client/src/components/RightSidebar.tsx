@@ -5,7 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 
 const RightSidebar = () => {
   const {
-    selectedUser,
+    selectedChat: selectedUser,
     messages,
   } = useChat();
   const { setViewRightSidebarMobile, viewRightSidebarMobile } = useChat()
