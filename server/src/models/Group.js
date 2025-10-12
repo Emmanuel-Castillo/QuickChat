@@ -2,12 +2,15 @@ import mongoose from "mongoose";
 
 const groupSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true, unique: true},
+    name: { type: String, required: true, unique: true },
+    founder: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     description: String,
-    members: [{
+    members: [
+      {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-    }]
+        ref: "User",
+      },
+    ],
   },
   { timestamps: true }
 );

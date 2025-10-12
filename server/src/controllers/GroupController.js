@@ -54,6 +54,7 @@ export const createGroup = async (req, res) => {
 
     const newGroup = await Group.create({
       name: groupName,
+      founder: myId,
       description: groupDescription,
       members: myId,
     });

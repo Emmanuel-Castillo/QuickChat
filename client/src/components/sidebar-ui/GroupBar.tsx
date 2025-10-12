@@ -4,12 +4,16 @@ type GroupBarProps = {
   isSelectedGroup: boolean;
   index: number;
   onClickGroup: () => void;
+
+  // JoinGroupPage
+  alreadyJoined?: boolean
 };
 const GroupBar = ({
   group,
   isSelectedGroup,
   index,
   onClickGroup,
+  alreadyJoined
 }: GroupBarProps) => {
   return (
     <div
@@ -26,6 +30,8 @@ const GroupBar = ({
       <div className="flex flex-col leading-5 truncate">
         <p>{group.name}</p>
       </div>
+
+      {alreadyJoined && <div className="ml-auto p-2 rounded">Joined</div>}
     </div>
   );
 };

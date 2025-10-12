@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage";
 import ProfilePage from "./pages/ProfilePage";
 import { Toaster } from "react-hot-toast";
 import { AuthContext, useAuth } from "../context/AuthContext";
+import JoinGroupPage from "./pages/JoinGroupPage";
 
 const App = () => {
   const { authUser } = useAuth();
@@ -22,7 +23,11 @@ const App = () => {
         />
         <Route
           path="/profile"
-          element={authUser ? <ProfilePage /> : <Navigate to={"/"} />}
+          element={authUser ? <ProfilePage /> : <Navigate to={"/login"} />}
+        />
+        <Route
+          path="/join-group"
+          element={authUser? <JoinGroupPage/>: <Navigate to={"/login"}/>}
         />
       </Routes>
     </div>

@@ -19,7 +19,7 @@ interface ChatContextProps {
   setUnseenMessages: React.Dispatch<React.SetStateAction<{}>>;
   
   // Group states
-  groups: any[];
+  joinedGroups: any[];
   getGroups: () => void;
   getGroupMessages: (groupId: number) => void;
   sendGroupMessage: (messageData: any) => void;
@@ -36,7 +36,7 @@ export const ChatProvider = ({
   children: React.ReactElement;
 }) => {
   const [messages, setMessages] = useState<any[]>([]);
-  const [groups, setGroups] = useState<any[]>([]);
+  const [joinedGroups, setJoinedGroups] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
   const [selectedChat, setSelectedChat] = useState<any | null>(null);
   const [viewRightSidebarMobile, setViewRightSidebarMobile] = useState(false);
@@ -50,7 +50,7 @@ export const ChatProvider = ({
     try {
       const { data } = await axios.get("/api/messages/groups");
       if (data.success) {
-        setGroups(data.groups);
+        setJoinedGroups(data.groups);
         setUnseenGroupMessages(data.unseenMessages)
 
         // Socket joins each room
@@ -228,7 +228,7 @@ export const ChatProvider = ({
     getMessages,
 
     // Group messaging states
-    groups,
+    joinedGroups,
     getGroups,
     getGroupMessages,
     sendGroupMessage,

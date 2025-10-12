@@ -17,7 +17,7 @@ const Sidebar = () => {
     setSelectedChat,
     unseenMessages,
     setUnseenMessages,
-    groups,
+    joinedGroups: groups,
     getGroups,
     unseenGroupMessages,
     setUnseenGroupMessages,
@@ -48,13 +48,12 @@ const Sidebar = () => {
   return (
     <div
       className={`bg-[#8185B2]/10 flex flex-col gap-y-4 h-full p-5 rounded-l-2xl overflow-y-scroll text-white ${
-        selectedChat  ? "max-lg:hidden" : "block"
+        selectedChat ? "max-lg:hidden" : "block"
       }`}
     >
       {/* HEADER */}
       <div>
         <div className="flex justify-between items-center">
-
           {/* LOGO */}
           <img
             src={assets.logo}
@@ -99,14 +98,15 @@ const Sidebar = () => {
 
       {/* LIST */}
       <div className="flex-1 flex flex-col ">
-
         {/* FILTER BUTTONS */}
         <div>
           <FilterButton
+            buttonText="Users"
             isSelected={filter === "user"}
             onClickButton={() => setFilter("user")}
           />
           <FilterButton
+            buttonText="Groups"
             isSelected={filter === "group"}
             onClickButton={() => setFilter("group")}
           />
@@ -123,7 +123,7 @@ const Sidebar = () => {
                 isOnlineUser={onlineUsers.includes(user._id)}
                 unseenMsgCount={unseenMessages[user._id]}
                 onClickUser={() => {
-                  setSelectedChat({...user, type: 'user'});
+                  setSelectedChat({ ...user, type: "user" });
                   setUnseenMessages((prev) => ({
                     ...prev,
                     [user._id]: 0,
@@ -138,7 +138,7 @@ const Sidebar = () => {
                 index={index}
                 isSelectedGroup={selectedChat?._id === group._id}
                 onClickGroup={() => {
-                  setSelectedChat({...group, type: 'group'});
+                  setSelectedChat({ ...group, type: "group" });
                   setUnseenGroupMessages((prev) => ({
                     ...prev,
                     [group._id]: 0,
@@ -150,7 +150,10 @@ const Sidebar = () => {
 
         {/* JOIN GROUP BUTTON */}
         {filter === "group" && (
-          <button className="bg-gradient-to-r from-purple-400 to-violet-600 text-white border-none text-sm font-light p-2 px-15 rounded-full cursor-pointer mt-4">
+          <button
+            className="bg-gradient-to-r from-purple-400 to-violet-600 text-white border-none text-sm font-light p-2 px-15 rounded-full cursor-pointer mt-4"
+            onClick={() => navigate("/join-group")}
+          >
             Join Group
           </button>
         )}
