@@ -5,7 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 
 const RightSidebar = () => {
   const {
-    selectedChat: selectedUser,
+    selectedChat,
     messages,
   } = useChat();
   const { setViewRightSidebarMobile, viewRightSidebarMobile } = useChat()
@@ -18,7 +18,7 @@ const RightSidebar = () => {
     setMsgImages(messages.filter((msg) => msg.image).map((msg) => msg.image));
   }, [messages]);
   return (
-    selectedUser && (
+    selectedChat && (
       <div
         className={`bg-[#8185B2]/10 text-white w-full relative overflow-y-scroll ${
         !viewRightSidebarMobile ? "max-lg:hidden" : "block"
@@ -32,17 +32,17 @@ const RightSidebar = () => {
         />
         <div className="pt-16 flex flex-col items-center gap-2 text-xs font-light mx-auto">
           <img
-            src={selectedUser?.profilePic || assets.avatar_icon}
+            src={selectedChat?.profilePic || assets.avatar_icon}
             alt=""
             className="w-20 aspect-[1/1] rounded-full"
           />
           <h1 className="px-10 text-xl font-medium mx-auto flex items-center gap-2">
-            {onlineUsers.includes(selectedUser._id) && (
+            {onlineUsers.includes(selectedChat._id) && (
               <p className="w-2 h-2 rounded-full bg-green-500"></p>
             )}
-            {selectedUser.fullName}
+            {selectedChat.fullName}
           </h1>
-          <p className="px-10 mx-auto">{selectedUser.bio}</p>
+          <p className="px-10 mx-auto">{selectedChat.bio}</p>
         </div>
 
         <hr className="border-[#ffffff50] my-4" />

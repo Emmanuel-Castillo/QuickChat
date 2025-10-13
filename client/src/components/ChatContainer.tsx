@@ -4,21 +4,36 @@ import { formatMessageTime } from "../lib/utils";
 import { useChat } from "../../context/ChatContext";
 import { useAuth } from "../../context/AuthContext";
 import toast from "react-hot-toast";
-import SingleChatContainer from "./SingleChatContainer";
-import GroupChatContainer from "./GroupChatContainer";
+import SingleChatMessages from "./chatcontainer-ui/SingleChatMessages";
+import GroupChatMessages from "./chatcontainer-ui/GroupChatMessages";
+import Header from "./chatcontainer-ui/Header";
+import { UserInput } from "./chatcontainer-ui/UserInput";
 
 const ChatContainer = () => {
-  const { selectedChat, viewRightSidebarMobile } =
-    useChat();
+  const {
+    loadingMessages,
+    selectedChat,
+    setSelectedChat,
+    viewRightSidebarMobile,
+    setViewRightSidebarMobile,
+  } = useChat();
 
-    console.log("selectedUser", selectedChat)
-
-  return selectedChat  ?  (
-    <div className={`h-full overflow-scroll relative backdrop-blur-lg ${
+  return selectedChat ? (
+    <div
+      className={`h-full overflow-scroll relative backdrop-blur-lg ${
         viewRightSidebarMobile ? "max-lg:hidden" : "block"
-      }`}>
-      {selectedChat.type === 'user' && <SingleChatContainer/>}
-      {selectedChat.type === 'group' &&  <GroupChatContainer/>}
+      }`}
+    >
+      <Header
+        chatImage={selectedChat.profilePic || assets.avatar_icon}
+        chatName={selectedChat.fullName || selectedChat.name}
+        leaveChat={() => setSelectedChat(null)}
+        viewChatInfo={() => setViewRightSidebarMobile(true)}
+      />
+      {selectedChat.type === "user" && <SingleChatMessages />}
+      {selectedChat.type === "group" && <GroupChatMessages />}
+
+      <UserInput disabled={loadingMessages} />
     </div>
   ) : (
     <div className="flex flex-col items-center justify-center gap-2 text-gray-500 bg-white/10 max-md:hidden">

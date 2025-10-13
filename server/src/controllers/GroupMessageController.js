@@ -10,14 +10,14 @@ import { io, userSocketMap } from "../server.js";
 export const getGroupsForSidebar = async (req, res) => {
   try {
     const userId = req.user._id;
-    const joinedGroups = await Group.find({members: {$in: [userId]}});
+    const joinedGroups = await Group.find({ members: { $in: [userId] } });
 
     // Count number of messsages not seen
     const unseenMessages = {};
     const promises = joinedGroups.map(async (group) => {
       const messages = await GroupMessage.find({
         receiverId: group._id,
-        seen: {$nin: [userId]},
+        seen: { $nin: [userId] },
       });
       if (messages.length > 0) {
         unseenMessages[group._id] = messages.length;
@@ -39,14 +39,14 @@ export const getGroupMessages = async (req, res) => {
     const myId = req.user._id;
 
     const messages = await GroupMessage.find({
-      receiverId: selectedGroupId
-    });
+      receiverId: selectedGroupId,
+    }).populate("senderId");
 
     // Mark messages as read
-    await GroupMessage.updateMany(
-      { receiverId: selectedGroupId },
-      { $push: {seenMemberIds: myId} }
-    );
+    // await GroupMessage.updateMany(
+    //   { receiverId: selectedGroupId },
+    //   { $push: {seenMemberIds: myId} }
+    // );
     res.json({ success: true, messages });
   } catch (error) {
     console.log(error.message);
@@ -57,9 +57,11 @@ export const getGroupMessages = async (req, res) => {
 // api to mark message as seen using message id
 export const markGroupMessageAsSeen = async (req, res) => {
   try {
-    const myId = req.user._id
+    const myId = req.user._id;
     const { id } = req.params;
-    await GroupMessage.findByIdAndUpdate(id, { $push: {seenMemberIds: myId} });
+    await GroupMessage.findByIdAndUpdate(id, {
+      $push: { seenMemberIds: myId },
+    });
     res.json({ success: true });
   } catch (error) {
     console.log(error.message);
@@ -85,14 +87,15 @@ export const sendGroupMessage = async (req, res) => {
       receiverId,
       text,
       image: imageUrl,
-      seenMemberIds: [senderId]
+      seenMemberIds: [senderId],
     });
 
-    // Emit the new group message to the receiver's socket
-    const receiverSocketId = userSocketMap[receiverId];
-    if (receiverSocketId) {
-      io.to(receiverSocketId).emit("newGroupMessage", newMessage);
-    }
+    const populatedMessage = await newMessage.populate('senderId')
+
+    // Broadcast to all other users the new message
+    const sockets = await io.fetchSockets()
+    const senderSocket = sockets.find((s) => s.id === userSocketMap[senderId])
+    senderSocket.to(receiverId).emit("newGroupMessage", populatedMessage);
 
     res.json({ success: true, newMessage });
   } catch (error) {

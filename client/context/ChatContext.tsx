@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 interface ChatContextProps {
   // Shared
   messages: any[];
+  loadingMessages: boolean;
   viewRightSidebarMobile: boolean;
   setViewRightSidebarMobile: React.Dispatch<React.SetStateAction<boolean>>;
   selectedChat: any | null;
@@ -17,14 +18,14 @@ interface ChatContextProps {
   sendMessage: (messageData: any) => void;
   unseenMessages: any;
   setUnseenMessages: React.Dispatch<React.SetStateAction<{}>>;
-  
+
   // Group states
   joinedGroups: any[];
   getGroups: () => void;
   getGroupMessages: (groupId: number) => void;
   sendGroupMessage: (messageData: any) => void;
   unseenGroupMessages: any;
-  setUnseenGroupMessages : React.Dispatch<React.SetStateAction<{}>>
+  setUnseenGroupMessages: React.Dispatch<React.SetStateAction<{}>>;
 }
 export const ChatContext = createContext<ChatContextProps | undefined>(
   undefined
@@ -35,6 +36,7 @@ export const ChatProvider = ({
 }: {
   children: React.ReactElement;
 }) => {
+  const [loadingMessages, setLoadingMessages] = useState(true);
   const [messages, setMessages] = useState<any[]>([]);
   const [joinedGroups, setJoinedGroups] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
@@ -51,12 +53,13 @@ export const ChatProvider = ({
       const { data } = await axios.get("/api/messages/groups");
       if (data.success) {
         setJoinedGroups(data.groups);
-        setUnseenGroupMessages(data.unseenMessages)
+        setUnseenGroupMessages(data.unseenMessages);
 
         // Socket joins each room
-        socket && data.groups.map((g: any )=> {
-           socket.emit("joinRoom", g.name)
-        })
+        socket &&
+          data.groups.map((g: any) => {
+            socket.emit("joinRoom", g._id);
+          });
       }
     } catch (error: any) {
       toast.error(error.message);
@@ -79,26 +82,33 @@ export const ChatProvider = ({
   // Function to get messages for selectedUser
   const getMessages = async (userId: number) => {
     try {
+      setLoadingMessages(true);
       const { data } = await axios.get(`/api/messages/${userId}`);
       if (data.success) {
         setMessages(data.messages);
       }
     } catch (error: any) {
       toast.error(error.message);
+    } finally {
+      setLoadingMessages(false);
     }
   };
 
   // Function to get messages for selectedGroup
   const getGroupMessages = async (groupId: number) => {
     try {
+      setLoadingMessages(true);
       const { data } = await axios.get(`/api/group-messages/${groupId}`);
       if (data.success) {
+        console.log(data);
         setMessages(data.messages);
       }
     } catch (error: any) {
       toast.error(error.message);
+    } finally {
+      setLoadingMessages(false);
     }
-  }
+  };
 
   // Function to send message to selected user
   const sendMessage = async (messageData: any) => {
@@ -132,7 +142,7 @@ export const ChatProvider = ({
     } catch (error: any) {
       toast.error(error.message);
     }
-  }
+  };
 
   // Function to subscribe to user messages
   // Get messages in real-time
@@ -167,6 +177,7 @@ export const ChatProvider = ({
   const subscribeToGroupMessages = async () => {
     if (!socket) return;
     socket.on("newGroupMessage", (newMessage: any) => {
+      console.log(newMessage)
       // If in chat container with selected group, and receive a message from them
       // Set newMessage into messages, and make it read
       if (selectedChat && newMessage.receiverId === selectedChat._id) {
@@ -182,7 +193,9 @@ export const ChatProvider = ({
       else {
         setUnseenGroupMessages((prevUnseenGroupMessages: any) => ({
           ...prevUnseenGroupMessages,
-          [newMessage.receiverId]: prevUnseenGroupMessages[newMessage.receiverId]
+          [newMessage.receiverId]: prevUnseenGroupMessages[
+            newMessage.receiverId
+          ]
             ? prevUnseenGroupMessages[newMessage.receiverId] + 1
             : 1,
         }));
@@ -200,13 +213,12 @@ export const ChatProvider = ({
 
   // Un/Subscribe to messages when socket is connected/disconnected, or when user/group is selected
   useEffect(() => {
-    if (!socket || !selectedChat) return
-    if (selectedChat.type == 'user'){
+    if (!socket || !selectedChat) return;
+    if (selectedChat.type == "user") {
       subscribeToMessages();
       return () => unsubscribeFromMessages();
-    }
-    else if (selectedChat.type == 'group') {
-      subscribeToGroupMessages()
+    } else if (selectedChat.type == "group") {
+      subscribeToGroupMessages();
       return () => unsubscribeFromGroupMessages();
     }
   }, [socket, selectedChat]);
@@ -214,10 +226,11 @@ export const ChatProvider = ({
   const value = {
     // Shared
     messages,
+    loadingMessages,
     viewRightSidebarMobile,
     setViewRightSidebarMobile,
     selectedChat,
-   setSelectedChat,
+    setSelectedChat,
 
     // Single messaging user states
     users,
@@ -233,7 +246,7 @@ export const ChatProvider = ({
     getGroupMessages,
     sendGroupMessage,
     setUnseenGroupMessages,
-    unseenGroupMessages
+    unseenGroupMessages,
   };
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
 };

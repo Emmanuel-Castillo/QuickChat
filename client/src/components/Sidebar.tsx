@@ -123,11 +123,13 @@ const Sidebar = () => {
                 isOnlineUser={onlineUsers.includes(user._id)}
                 unseenMsgCount={unseenMessages[user._id]}
                 onClickUser={() => {
-                  setSelectedChat({ ...user, type: "user" });
-                  setUnseenMessages((prev) => ({
-                    ...prev,
-                    [user._id]: 0,
-                  }));
+                  if (selectedChat?._id !== user._id) {
+                    setSelectedChat({ ...user, type: "user" });
+                    setUnseenMessages((prev) => ({
+                      ...prev,
+                      [user._id]: 0,
+                    }));
+                  }
                 }}
               />
             ))}
@@ -138,11 +140,13 @@ const Sidebar = () => {
                 index={index}
                 isSelectedGroup={selectedChat?._id === group._id}
                 onClickGroup={() => {
-                  setSelectedChat({ ...group, type: "group" });
-                  setUnseenGroupMessages((prev) => ({
-                    ...prev,
-                    [group._id]: 0,
-                  }));
+                  if (selectedChat?._id !== group._id) {
+                    setSelectedChat({ ...group, type: "group" });
+                    setUnseenGroupMessages((prev) => ({
+                      ...prev,
+                      [group._id]: 0,
+                    }));
+                  }
                 }}
               />
             ))}
