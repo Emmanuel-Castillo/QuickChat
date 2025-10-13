@@ -10,7 +10,7 @@ import { io, userSocketMap } from "../server.js";
 export const getGroupsForSidebar = async (req, res) => {
   try {
     const userId = req.user._id;
-    const joinedGroups = await Group.find({ members: { $in: [userId] } });
+    const joinedGroups = await Group.find({ members: { $in: [userId] } }).populate('members');
 
     // Count number of messsages not seen
     const unseenMessages = {};

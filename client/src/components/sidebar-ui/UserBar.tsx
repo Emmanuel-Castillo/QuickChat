@@ -3,10 +3,10 @@ import assets from "../../assets/assets";
 type UserBarProps = {
   user: any;
   isSelectedUser: boolean;
-  isOnlineUser: boolean;
   unseenMsgCount: number;
   index: number;
   onClickUser: () => void;
+  isOnlineUser: boolean;
 };
 const UserBar = ({
   user,

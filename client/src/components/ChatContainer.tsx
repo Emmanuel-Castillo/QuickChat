@@ -25,7 +25,7 @@ const ChatContainer = () => {
       }`}
     >
       <Header
-        chatImage={selectedChat.profilePic || assets.avatar_icon}
+        chatImage={selectedChat.profilePic || selectedChat.groupPic || assets.avatar_icon}
         chatName={selectedChat.fullName || selectedChat.name}
         leaveChat={() => setSelectedChat(null)}
         viewChatInfo={() => setViewRightSidebarMobile(true)}
