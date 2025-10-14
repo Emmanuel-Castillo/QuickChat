@@ -1,11 +1,13 @@
 import React from "react";
 import assets from "../../assets/assets";
+import OptionsBox, { Action } from "../shared-ui/OptionsBox";
 
 type HeaderProps = {
   chatImage: string;
   chatName: string;
   leaveChat: () => void;
   viewChatInfo: () => void;
+  actions: Action[]
 
   isOnlineUser?: boolean
 };
@@ -14,6 +16,7 @@ const Header = ({
   chatName,
   leaveChat,
   viewChatInfo,
+  actions,
   isOnlineUser
 }: HeaderProps) => {
   return (
@@ -25,6 +28,7 @@ const Header = ({
               <span className="w-2 h-2 rounded-full bg-green-500"></span>
             )}
           </p>
+      <OptionsBox actions={actions}/>
 
       {/* Only show back arrow when screen is less than md size. Sets selected user to null, making the App only render the Sidebar */}
       <img

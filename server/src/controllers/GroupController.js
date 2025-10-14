@@ -96,3 +96,20 @@ export const joinGroup = async (req, res) => {
     res.json({ success: false, error: error.message });
   }
 };
+
+// Controller to leave a group
+export const leaveGroup = async (req, res) => {
+  try {
+    const myId = req.user._id;
+    const {groupId} = req.params;
+
+    await Group.findByIdAndUpdate(groupId, {$pull: {'members': myId}})
+    await User.findByIdAndUpdate(myId, {$pull: {'groups': groupId}})
+
+    res.json({success: true, message: "Left group!"})
+
+  } catch (error) {
+    console.log(error)
+    res.json({success: false, error: error.message})
+  }
+}

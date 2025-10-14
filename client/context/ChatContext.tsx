@@ -20,6 +20,7 @@ interface ChatContextProps {
   setUnseenMessages: React.Dispatch<React.SetStateAction<{}>>;
 
   // Group states
+  leaveGroup: (groupId: number) => void;
   joinedGroups: any[];
   getGroups: () => void;
   getGroupMessages: (groupId: number) => void;
@@ -46,6 +47,20 @@ export const ChatProvider = ({
   const [unseenGroupMessages, setUnseenGroupMessages] = useState({});
 
   const { socket, axios } = useAuth();
+
+  const leaveGroup = async (groupId: number) => {
+    try {
+      const { data } = await axios.delete(`/api/groups/leave/${groupId}`);
+      if (data.success) {
+        setSelectedChat(null);
+        setJoinedGroups((prev) => prev.filter((p) => p._id !== groupId));
+
+        socket && socket.emit("leaveRoom", groupId);
+      }
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
 
   // Function to get all joined groups for sidebar + set unseenGroupMessages
   const getGroups = async () => {
@@ -240,6 +255,7 @@ export const ChatProvider = ({
     getMessages,
 
     // Group messaging states
+    leaveGroup,
     joinedGroups,
     getGroups,
     getGroupMessages,

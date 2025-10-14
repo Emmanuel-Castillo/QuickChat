@@ -8,15 +8,22 @@ import SingleChatMessages from "./chatcontainer-ui/SingleChatMessages";
 import GroupChatMessages from "./chatcontainer-ui/GroupChatMessages";
 import Header from "./chatcontainer-ui/Header";
 import { UserInput } from "./chatcontainer-ui/UserInput";
+import { Action } from "./shared-ui/OptionsBox";
 
 const ChatContainer = () => {
   const {
+    leaveGroup,
     loadingMessages,
     selectedChat,
     setSelectedChat,
     viewRightSidebarMobile,
     setViewRightSidebarMobile,
   } = useChat();
+
+  const optionBoxActions: Action[] =
+    selectedChat && selectedChat.type === "group"
+      ? [{ text: "Leave Group", onClickAction: () => leaveGroup(selectedChat._id) }]
+      : [];
 
   return selectedChat ? (
     <div
@@ -25,15 +32,18 @@ const ChatContainer = () => {
       }`}
     >
       <Header
-        chatImage={selectedChat.profilePic || selectedChat.groupPic || assets.avatar_icon}
+        chatImage={
+          selectedChat.profilePic || selectedChat.groupPic || assets.avatar_icon
+        }
         chatName={selectedChat.fullName || selectedChat.name}
         leaveChat={() => setSelectedChat(null)}
         viewChatInfo={() => setViewRightSidebarMobile(true)}
+        actions={optionBoxActions}
       />
       {selectedChat.type === "user" && <SingleChatMessages />}
       {selectedChat.type === "group" && <GroupChatMessages />}
 
-      <UserInput disabled={loadingMessages} chatType={selectedChat.type}/>
+      <UserInput disabled={loadingMessages} chatType={selectedChat.type} />
     </div>
   ) : (
     <div className="flex flex-col items-center justify-center gap-2 text-gray-500 bg-white/10 max-md:hidden">

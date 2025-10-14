@@ -38,9 +38,14 @@ io.on("connection", (socket) => {
   });
 
   // Client-side emit signal to join room using name
-  socket.on("joinRoom", (roomName) => {
-    socket.join(roomName)
-    console.log(`${userId} connected to room: ${roomName}`)
+  socket.on("joinRoom", (groupId) => {
+    socket.join(groupId)
+    console.log(`${userId} connected to room: ${groupId}`)
+  })
+
+  socket.on("leaveRoom", (groupId) => {
+    socket.leave(groupId)
+    console.log(`${userId} left room : ${groupId}`)
   })
 });
 
