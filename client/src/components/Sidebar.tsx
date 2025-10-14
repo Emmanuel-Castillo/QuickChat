@@ -6,6 +6,7 @@ import { useChat } from "../../context/ChatContext";
 import UserBar from "./sidebar-ui/UserBar";
 import GroupBar from "./sidebar-ui/GroupBar";
 import FilterButton from "./sidebar-ui/FilterButton";
+import OptionsBox from "./shared-ui/OptionsBox";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -62,25 +63,15 @@ const Sidebar = () => {
           />
 
           {/* EDIT PROFILE AND LOGOUT BUTTONS */}
-          <div className="relative py-2 group">
-            <img
-              src={assets.menu_icon}
-              alt="menu"
-              className="h-5 cursor-pointer"
-            />
-            <div className="absolute top-full right-0 z-20 w-32 p-5 rounded-md bg-[#282142] border border-gray-600 text-gray-100 hidden group-hover:block">
-              <p
-                onClick={() => navigate("/profile")}
-                className="cursor-pointer text-sm"
-              >
-                Edit Profile
-              </p>
-              <hr className="my-2 border-t border-gray-500" />
-              <p onClick={() => logout()} className="cursor-pointer text-sm">
-                Logout
-              </p>
-            </div>
-          </div>
+          <OptionsBox
+            actions={[
+              {
+                text: "Edit Profile",
+                onClickAction: () => navigate("/profile"),
+              },
+              { text: "Logout", onClickAction: () => logout() },
+            ]}
+          />
         </div>
 
         {/* SEARCH INPUT */}
@@ -117,7 +108,7 @@ const Sidebar = () => {
           {filter === "user" &&
             filteredUsers.map((user, index) => (
               <UserBar
-                index={index}
+                key={index}
                 user={user}
                 isSelectedUser={selectedChat?._id === user._id}
                 isOnlineUser={onlineUsers.includes(user._id)}
@@ -137,7 +128,7 @@ const Sidebar = () => {
             filteredGroups.map((group, index) => (
               <GroupBar
                 group={group}
-                index={index}
+                key={index}
                 isSelectedGroup={selectedChat?._id === group._id}
                 onClickGroup={() => {
                   if (selectedChat?._id !== group._id) {

@@ -27,7 +27,7 @@ const GroupChatMessages = () => {
      (loadingMessages ? <div>Loading messages...</div> : <div className="flex flex-col h-[calc(100%-120px)] overflow-y-scroll p-3 pb-6">
         {messages.map((msg, index) => (
           <MessageRow
-            index={index}
+            key={index}
             isAuthUserMsg={msg.senderId._id === authUser._id}
             senderName={msg.senderId.fullName}
             senderProfilePic={

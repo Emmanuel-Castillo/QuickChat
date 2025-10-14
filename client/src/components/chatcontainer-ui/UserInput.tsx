@@ -3,15 +3,23 @@ import toast from "react-hot-toast";
 import { useChat } from "../../../context/ChatContext";
 import assets from "../../assets/assets";
 
-export const UserInput = ({ disabled }: { disabled: boolean }) => {
-  const { sendGroupMessage } = useChat();
+export const UserInput = ({
+  disabled,
+  chatType,
+}: {
+  disabled: boolean;
+  chatType: "user" | "group";
+}) => {
+  const { sendGroupMessage, sendMessage } = useChat();
   const [input, setInput] = useState("");
 
   // Handle sending a message
   const handleSendMessage = async (e: any) => {
     e.preventDefault();
     if (input.trim() === "") return null;
-    await sendGroupMessage({ text: input.trim() });
+    chatType === "group"
+      ? await sendGroupMessage({ text: input.trim() })
+      : await sendMessage({ text: input.trim() });
     setInput("");
   };
 
@@ -25,7 +33,9 @@ export const UserInput = ({ disabled }: { disabled: boolean }) => {
 
     const reader = new FileReader();
     reader.onloadend = async () => {
-      await sendGroupMessage({ image: reader.result });
+      chatType === "group"
+        ? await sendGroupMessage({ image: reader.result })
+        : await sendMessage({ image: reader.result });
       e.target.value = "";
     };
     reader.readAsDataURL(file);

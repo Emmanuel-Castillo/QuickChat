@@ -5,6 +5,9 @@ import { useAuth } from "../../context/AuthContext";
 import RightSidebarHeader from "./rightsidebar-ui/RightSidebarHeader";
 import UserBar from "./sidebar-ui/UserBar";
 import FilterButton from "./sidebar-ui/FilterButton";
+import MediaContent from "./rightsidebar-ui/MediaContent";
+import GroupMembersContent from "./rightsidebar-ui/GroupMembersContent";
+import RightSidebarGroupContent from "./rightsidebar-ui/RightSidebarGroupContent";
 
 const RightSidebar = () => {
   const { selectedChat, messages } = useChat();
@@ -12,14 +15,12 @@ const RightSidebar = () => {
   const { logout, onlineUsers } = useAuth();
 
   const [msgImages, setMsgImages] = useState<any[]>([]);
-  const [showContent, setShowContent] = useState<"media" | "members">(
-    "members"
-  );
 
   // Get all the images from the messagese and set them to state
   useEffect(() => {
     setMsgImages(messages.filter((msg) => msg.image).map((msg) => msg.image));
   }, [messages]);
+
   return (
     selectedChat && (
       <div
@@ -47,56 +48,18 @@ const RightSidebar = () => {
 
         <hr className="border-[#ffffff50]" />
 
-        <div className="flex-1 flex flex-col border-2 border-[#282142]/50 rounded-b-xl">
-          <div className="flex gap-2">
-            <FilterButton
-              buttonText="Media"
-              isSelected={showContent === "media"}
-              onClickButton={() => {
-                setShowContent("media");
-              }}
-            />
-            <FilterButton
-              buttonText="Members"
-              isSelected={showContent === "members"}
-              onClickButton={() => {
-                setShowContent("members");
-              }}
-            />
+        {selectedChat.type === "group" && (
+          <RightSidebarGroupContent
+            msgImages={msgImages}
+            selectedChat={selectedChat}
+          />
+        )}
+        {selectedChat.type === "user" && (
+          <div className="flex-1">
+            <p className="text-white">Media</p>
+            <MediaContent msgImages={msgImages} />
           </div>
-
-          {/* Image messages */}
-          {showContent === "media" && (
-            <div className="px-5 text-xs">
-              <div className="mt-2 max-h-[200px] overflow-y-scroll grid grid-cols-2 gap-4 opacity-80">
-                {msgImages.map((url, index) => (
-                  <div
-                    key={index}
-                    onClick={() => window.open(url)}
-                    className="cursor-pointer rounded"
-                  >
-                    <img src={url} alt="" className="h-full rounded-md" />
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {showContent === "members" && selectedChat?.members && (
-            <div className="overflow-y-scroll">
-              {selectedChat.members.map((m: any, index: number) => (
-                <UserBar
-                  user={m}
-                  isSelectedUser={false}
-                  isOnlineUser={false}
-                  unseenMsgCount={0}
-                  index={index}
-                  onClickUser={() => {}}
-                />
-              ))}
-            </div>
-          )}
-        </div>
+        )}
 
         <button
           onClick={logout}

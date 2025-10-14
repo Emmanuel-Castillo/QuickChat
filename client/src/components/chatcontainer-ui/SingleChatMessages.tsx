@@ -31,7 +31,7 @@ const SingleChatMessages = () => {
       <div className="flex flex-col h-[calc(100%-120px)] overflow-y-scroll p-3 pb-6">
         {messages.map((msg, index) => (
           <MessageRow
-            index={index}
+            key={index}
             isAuthUserMsg={msg.senderId === authUser._id}
             createdAt={msg.createdAt}
             senderProfilePic={

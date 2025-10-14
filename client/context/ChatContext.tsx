@@ -177,7 +177,6 @@ export const ChatProvider = ({
   const subscribeToGroupMessages = async () => {
     if (!socket) return;
     socket.on("newGroupMessage", (newMessage: any) => {
-      console.log(newMessage)
       // If in chat container with selected group, and receive a message from them
       // Set newMessage into messages, and make it read
       if (selectedChat && newMessage.receiverId === selectedChat._id) {

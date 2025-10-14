@@ -2,7 +2,6 @@ import assets from "../../assets/assets";
 type GroupBarProps = {
   group: any;
   isSelectedGroup: boolean;
-  index: number;
   onClickGroup: () => void;
 
   // JoinGroupPage
@@ -11,13 +10,11 @@ type GroupBarProps = {
 const GroupBar = ({
   group,
   isSelectedGroup,
-  index,
   onClickGroup,
   alreadyJoined
 }: GroupBarProps) => {
   return (
     <div
-      key={index}
       className={`relative flex items-center gap-2 p-3 rounded cursor-pointer max-sm:text-sm 
                 ${isSelectedGroup && "bg-[#282142]/50"} hover:bg-[#282142]/50`}
       onClick={onClickGroup}

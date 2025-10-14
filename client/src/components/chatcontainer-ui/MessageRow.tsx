@@ -2,7 +2,6 @@ import React from "react";
 import { formatMessageTime } from "../../lib/utils";
 
 type MessageRowProps = {
-  index: number;
   isAuthUserMsg: boolean;
   senderProfilePic: string;
   senderName?: string;
@@ -11,7 +10,6 @@ type MessageRowProps = {
   createdAt: string;
 };
 const MessageRow = ({
-  index,
   isAuthUserMsg,
   senderProfilePic,
   senderName,
@@ -21,7 +19,6 @@ const MessageRow = ({
 }: MessageRowProps) => {
   return (
     <div
-      key={index}
       className={`flex items-end gap-2 justify-end ${
         !isAuthUserMsg && "flex-row-reverse"
       }`}

@@ -4,7 +4,6 @@ type UserBarProps = {
   user: any;
   isSelectedUser: boolean;
   unseenMsgCount: number;
-  index: number;
   onClickUser: () => void;
   isOnlineUser: boolean;
 };
@@ -13,13 +12,11 @@ const UserBar = ({
   isSelectedUser,
   isOnlineUser,
   unseenMsgCount,
-  index,
   onClickUser,
 }: UserBarProps) => {
   return (
     <div
       onClick={onClickUser}
-      key={index}
       className={`relative flex items-center gap-2 p-3 rounded cursor-pointer max-sm:text-sm ${
         isSelectedUser && "bg-[#282142]/50"
       } hover:bg-[#282142]/50`}

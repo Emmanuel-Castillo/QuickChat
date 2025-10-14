@@ -95,6 +95,7 @@ export const sendGroupMessage = async (req, res) => {
     // Broadcast to all other users the new message
     const sockets = await io.fetchSockets()
     const senderSocket = sockets.find((s) => s.id === userSocketMap[senderId])
+    console.log("senderSocket", senderSocket.id  )
     senderSocket.to(receiverId).emit("newGroupMessage", populatedMessage);
 
     res.json({ success: true, newMessage });
