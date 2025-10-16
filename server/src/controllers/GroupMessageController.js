@@ -3,14 +3,16 @@
 import cloudinary from "../lib/cloudinary.js";
 import Group from "../models/Group.js";
 import GroupMessage from "../models/GroupMessage.js";
-import Message from "../models/Message.js";
 import { io, userSocketMap } from "../server.js";
 
-// Fetch all joined groups + unseen messages count
-export const getGroupsForSidebar = async (req, res) => {
+// REVIEWED: 10/15/2025
+// Fetch all joined groups + unseen messages count for Sidebar
+export const getJoinedGroupsPlusUnseenMessages = async (req, res) => {
   try {
     const userId = req.user._id;
-    const joinedGroups = await Group.find({ members: { $in: [userId] } }).populate('members');
+    const joinedGroups = await Group.find({
+      members: { $in: [userId] },
+    }).populate("members");
 
     // Count number of messsages not seen
     const unseenMessages = {};
@@ -32,6 +34,7 @@ export const getGroupsForSidebar = async (req, res) => {
   }
 };
 
+// EDITED: 10/15/2025
 // Get all messages for selected group
 export const getGroupMessages = async (req, res) => {
   try {
@@ -43,32 +46,34 @@ export const getGroupMessages = async (req, res) => {
     }).populate("senderId");
 
     // Mark messages as read
-    // await GroupMessage.updateMany(
-    //   { receiverId: selectedGroupId },
-    //   { $push: {seenMemberIds: myId} }
-    // );
+    await GroupMessage.updateMany(
+      { receiverId: selectedGroupId },
+      { $addToSet: { seenMemberIds: myId } }
+    );
     res.json({ success: true, messages });
   } catch (error) {
     console.log(error.message);
-    res.json({ success: false, message: error.message });
+    res.json({ success: false, error: error.message });
   }
 };
 
+// EDITED: 10/15/2025
 // api to mark message as seen using message id
 export const markGroupMessageAsSeen = async (req, res) => {
   try {
     const myId = req.user._id;
     const { id } = req.params;
     await GroupMessage.findByIdAndUpdate(id, {
-      $push: { seenMemberIds: myId },
+      $addToSet: { seenMemberIds: myId },
     });
     res.json({ success: true });
   } catch (error) {
     console.log(error.message);
-    res.json({ success: false, message: error.message });
+    res.json({ success: false, error: error.message });
   }
 };
 
+// EDITED: 10/15/2025
 // Send message to selected group
 export const sendGroupMessage = async (req, res) => {
   try {
@@ -90,17 +95,18 @@ export const sendGroupMessage = async (req, res) => {
       seenMemberIds: [senderId],
     });
 
-    const populatedMessage = await newMessage.populate('senderId')
+    const populatedMessage = await newMessage.populate("senderId");
 
     // Broadcast to all other users the new message
-    const sockets = await io.fetchSockets()
-    const senderSocket = sockets.find((s) => s.id === userSocketMap[senderId])
-    console.log("senderSocket", senderSocket.id  )
-    senderSocket.to(receiverId).emit("newGroupMessage", populatedMessage);
+    const sockets = await io.fetchSockets();
+    const senderSocket = sockets.find((s) => s.id === userSocketMap[senderId]);
+    if (senderSocket) {
+      senderSocket.to(receiverId).emit("newGroupMessage", populatedMessage);
+    }
 
     res.json({ success: true, newMessage });
   } catch (error) {
     console.log(error.message);
-    res.json({ success: false, message: error.message });
+    res.json({ success: false, error: error.message });
   }
 };

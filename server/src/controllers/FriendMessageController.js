@@ -5,16 +5,17 @@ import Message from "../models/Message.js";
 import User from "../models/User.js";
 import { io, userSocketMap } from "../server.js";
 
-export const getUsersForSidebar = async (req, res) => {
+// EDITED: 10/15/2025
+export const getFriendsPlusUnseenMessages = async (req, res) => {
   try {
     const userId = req.user._id;
-    const filteredUsers = await User.find({ _id: { $ne: userId } }).select(
+    const friends = await User.find({ friends: { $in: [userId] } }).select(
       "-password"
     );
 
     // Count number of messsages not seen
     const unseenMessages = {};
-    const promises = filteredUsers.map(async (user) => {
+    const promises = friends.map(async (user) => {
       const messages = await Message.find({
         senderId: user._id,
         receiverId: userId,
@@ -26,52 +27,55 @@ export const getUsersForSidebar = async (req, res) => {
     });
 
     await Promise.all(promises);
-    res.json({ success: true, users: filteredUsers, unseenMessages });
+    res.json({ success: true, users: friends, unseenMessages });
   } catch (error) {
     console.log(error.message);
-    res.json({ success: false, message: error.message });
+    res.json({ success: false, error: error.message });
   }
 };
 
+// EDITED: 10/15/2025
 // Get all messages for selected user
-export const getMessages = async (req, res) => {
+export const getFriendMessages = async (req, res) => {
   try {
-    const { id: selectedUserId } = req.params;
+    const { id: friendId } = req.params;
     const myId = req.user._id;
 
     const messages = await Message.find({
       $or: [
-        { senderId: selectedUserId, receiverId: myId },
-        { senderId: myId, receiverId: selectedUserId },
+        { senderId: friendId, receiverId: myId },
+        { senderId: myId, receiverId: friendId },
       ],
     });
 
     // Mark messages as read
     await Message.updateMany(
-      { senderId: selectedUserId, receiverId: myId },
+      { senderId: friendId, receiverId: myId },
       { seen: true }
     );
     res.json({ success: true, messages });
   } catch (error) {
     console.log(error.message);
-    res.json({ success: false, message: error.message });
+    res.json({ success: false, error: error.message });
   }
 };
 
+// EDITED: 10/15/2025
 // api to mark message as seen using message id
-export const markMessageAsSeen = async (req, res) => {
+export const markFriendMessageAsSeen = async (req, res) => {
   try {
     const { id } = req.params;
     await Message.findByIdAndUpdate(id, { seen: true });
     res.json({ success: true });
   } catch (error) {
     console.log(error.message);
-    res.json({ success: false, message: error.message });
+    res.json({ success: false, error: error.message });
   }
 };
 
+// EDITED: 10/15/2025
 // Send message to selected user
-export const sendMessage = async (req, res) => {
+export const sendMessageToFriend = async (req, res) => {
   try {
     const { text, image } = req.body;
     const receiverId = req.params.id;
@@ -99,6 +103,6 @@ export const sendMessage = async (req, res) => {
     res.json({ success: true, newMessage });
   } catch (error) {
     console.log(error.message);
-    res.json({ success: false, message: error.message });
+    res.json({ success: false, error: error.message });
   }
 };

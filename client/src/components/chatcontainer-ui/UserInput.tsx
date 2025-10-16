@@ -10,7 +10,7 @@ export const UserInput = ({
   disabled: boolean;
   chatType: "user" | "group";
 }) => {
-  const { sendGroupMessage, sendMessage } = useChat();
+  const { sendMessageToGroup: sendGroupMessage, sendMessageToFriend: sendMessage } = useChat();
   const [input, setInput] = useState("");
 
   // Handle sending a message

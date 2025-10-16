@@ -13,50 +13,66 @@ import ConfirmationModal from "../components/joingrouppage-ui/ConfirmationModal"
 const JoinGroupPage = () => {
   const { authUser, axios } = useAuth();
   const { joinedGroups } = useChat();
+  const navigate = useNavigate();
+
   const [groups, setGroups] = useState<any[]>([]);
   const [selectedGroup, setSelectedGroup] = useState<any | null>();
   const [createGroup, setCreateGroup] = useState(false);
   const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const filteredGroups: any[] = filterGroups(input, groups);
-  const navigate = useNavigate();
 
   const createNewGroup = async (name: string, description: string) => {
     try {
-      if (!authUser) throw new Error("authUser not defined!");
-      if (name.length == 0) throw new Error("Group name must be defined!");
+      setLoading(true);
+      if (!authUser) return;
+      if (name.length === 0) throw new Error("Group name must be defined!");
       const body = {
         groupName: name,
         groupDescription: description,
       };
+      toast.loading("Creating new group...")
       const { data } = await axios.post("/api/groups/create", body);
       if (data.success) {
+        toast.success(data.message)
         navigate(-1);
       }
     } catch (error: any) {
       toast.error(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   const joinGroup = async (groupId: string) => {
     try {
+      setLoading(true);
+      toast.loading("Joining group...")
       const { data } = await axios.post(`/api/groups/join/${groupId}`);
       if (data.success) {
+        toast.success(data.message)
         navigate(-1);
       }
     } catch (error: any) {
       toast.error(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     const fetchGroups = async () => {
       try {
+        setLoading(true);
         const { data } = await axios.get("/api/groups/all");
         if (data.success) {
           setGroups(data.groups);
         }
       } catch (error: any) {
         toast.error(error.message);
+      } finally {
+        setLoading(false);
       }
     };
     fetchGroups();
@@ -68,6 +84,7 @@ const JoinGroupPage = () => {
         <CreateGroupModal
           onClickCancel={() => setCreateGroup(false)}
           onClickCreate={createNewGroup}
+          loading={loading}
         />
       )}
       {selectedGroup && (
@@ -89,27 +106,35 @@ const JoinGroupPage = () => {
             placeholder="Search group"
             onChange={(e) => setInput(e.target.value)}
             value={input}
+            disabled={loading}
           />
         </div>
-        {filteredGroups.map((g, index) => (
-          <GroupBar
-            group={g}
-            index={index}
-            isSelectedGroup={selectedGroup && selectedGroup._id == g._id}
-            onClickGroup={() => {
-              if (!joinedGroups.find(f => f._id == g._id)) {
-                setSelectedGroup(g);
-              }
-            }}
-            alreadyJoined={joinedGroups.find(f => f._id == g._id)}
-          />
-        ))}
+        {loading ? (
+          <div className="flex flex-1 items-center justify-center">
+            <p className="text-white">Loading all groups...</p>
+          </div>
+        ) : (
+          filteredGroups.map((g, index) => (
+            <GroupBar
+              group={g}
+              key={index}
+              isSelectedGroup={selectedGroup && selectedGroup._id == g._id}
+              onClickGroup={() => {
+                if (!joinedGroups.find((f) => f._id == g._id)) {
+                  setSelectedGroup(g);
+                }
+              }}
+              alreadyJoined={joinedGroups.find((f) => f._id == g._id)}
+            />
+          ))
+        )}
 
         <ActionButton
           buttonText="Create Group"
           onClickButton={() => {
             setCreateGroup(true);
           }}
+          disabled={loading}
         />
       </div>
     </div>

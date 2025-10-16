@@ -12,14 +12,14 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const { logout, onlineUsers } = useAuth();
   const {
-    getUsers,
-    users,
+    getFriends: getUsers,
+    friends: users,
     selectedChat,
     setSelectedChat,
-    unseenMessages,
-    setUnseenMessages,
+    unseenFriendMessages: unseenMessages,
+    setUnseenFriendMessages: setUnseenMessages,
     joinedGroups: groups,
-    getGroups,
+    getJoinedGroups: getGroups,
     unseenGroupMessages,
     setUnseenGroupMessages,
   } = useChat();
@@ -92,7 +92,7 @@ const Sidebar = () => {
         {/* FILTER BUTTONS */}
         <div>
           <FilterButton
-            buttonText="Users"
+            buttonText="Friends"
             isSelected={filter === "user"}
             onClickButton={() => setFilter("user")}
           />

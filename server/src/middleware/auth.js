@@ -10,13 +10,12 @@ export const protectRoute = async (req, res, next) => {
     // Remove password from db
     const user = await User.findById(decoded.userId).select("-password");
 
-    if (!user) return res.json({ success: false, message: "User not found" });
+    if (!user) throw new Error("User not found");
 
     req.user = user;
     next();
   } catch (error) {
     console.log(error.message);
-    return res.json({ success: false, message: error.message });
+    return res.json({ success: false, error: error.message });
   }
 };
-

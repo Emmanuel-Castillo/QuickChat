@@ -4,10 +4,11 @@ import cors from "cors";
 import http from "http";
 import { connectDB } from "./lib/db.js";
 import userRouter from "./routes/userRoutes.js";
-import messageRouter from "./routes/messageRoutes.js";
+import friendMsgRouter from "./routes/friendMessageRoutes.js";
 import { Server } from "socket.io";
 import groupRouter from "./routes/groupRoutes.js";
 import groupMsgRouter from "./routes/groupMessageRoutes.js";
+import friendRouter from "./routes/friendRoutes.js";
 
 // Create Express app and HTTP server
 const app = express();
@@ -57,7 +58,8 @@ app.use(cors());
 // Routes setup
 app.use("/api/status", (req, res) => res.send("Server is live"));
 app.use("/api/auth", userRouter);
-app.use("/api/messages", messageRouter);
+app.use("/api/friends", friendRouter)
+app.use("/api/friend-messages", friendMsgRouter);
 app.use("/api/groups", groupRouter)
 app.use("/api/group-messages", groupMsgRouter)
 

@@ -7,7 +7,7 @@ import MessageRow from "./MessageRow";
 
 const SingleChatMessages = () => {
   const scrollEnd = useRef<HTMLDivElement>(null);
-  const { selectedChat, messages, getMessages, loadingMessages } = useChat();
+  const { selectedChat, messages, getFriendMessages: getMessages, loadingMessages } = useChat();
   const { authUser } = useAuth();
 
   useEffect(() => {
