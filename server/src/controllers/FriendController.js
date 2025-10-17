@@ -1,5 +1,6 @@
 import FriendRequest from "../models/FriendRequest.js";
 import User from "../models/User.js";
+import { io, userSocketMap } from "../server.js";
 
 // CREATED 10/15/2025
 export const addFriend = async (req, res) => {
@@ -9,6 +10,14 @@ export const addFriend = async (req, res) => {
 
     await User.findByIdAndUpdate(myId, { $addToSet: { friends: [userId] } });
     await User.findByIdAndUpdate(userId, { $addToSet: { friends: [myId] } });
+
+    // Remove FRs
+    await FriendRequest.deleteMany({
+      $or: [
+        { $and: [{ receiverId: myId }, { senderId: userId }] },
+        { $and: [{ senderId: myId }, { receiverId: userId }] },
+      ],
+    });
 
     res.json({ success: true, message: "New friend added!" });
   } catch (error) {
@@ -39,19 +48,41 @@ export const sendFriendRequest = async (req, res) => {
     const myId = req.user._id;
     const { userId } = req.params;
 
+    // Check if already sent friend request to user
+    const existingFR = await FriendRequest.find({
+      senderId: myId,
+      receiverId: userId,
+    });
+    if (existingFR.length > 0) throw new Error("Already sent friend request.");
+
     const newFriendRequest = await FriendRequest.create({
       senderId: myId,
       receiverId: userId,
     });
 
-    const populatedRequest = await newFriendRequest.populate("senderId");
+    newFriendRequest.save();
+    await newFriendRequest.populate("senderId", "-password");
+    await newFriendRequest.populate("receiverId", "-password");
+    const populatedRequest = newFriendRequest;
 
     const receiverSocketId = userSocketMap[userId];
     if (receiverSocketId) {
-      io.to(receiverSocketId).emit("newMessage", populatedRequest);
+      io.to(receiverSocketId).emit("newFriendRequest", populatedRequest);
     }
 
     res.json({ success: true, message: "Sent friend request!" });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, error: error.message });
+  }
+};
+
+export const deleteFriendRequest = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await FriendRequest.findByIdAndDelete(id);
+    res.json({ success: true, message: "Friend request removed" });
   } catch (error) {
     console.log(error);
     res.json({ success: false, error: error.message });
@@ -64,8 +95,8 @@ export const getFriendRequests = async (req, res) => {
     const myId = req.user._id;
 
     const friendRequests = await FriendRequest.find({ receiverId: myId })
-      .populate("senderId")
-      .select("-password");
+      .populate("senderId", "-password")
+      .populate("receiverId", "-password");
 
     res.json({
       success: true,

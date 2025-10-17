@@ -115,3 +115,16 @@ export const getUser = async (req, res) => {
     res.json({ success: false, error: error.message });
   }
 };
+
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const myId = req.user._id;
+    const users = await User.find({ _id: { $ne: myId } });
+
+    res.json({ success: true, users: users });
+  } catch (error) {
+    console.error(error);
+    res.json({ success: false, error: error.message });
+  }
+};

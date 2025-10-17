@@ -2,10 +2,12 @@ import assets from "../../assets/assets";
 
 type UserBarProps = {
   user: any;
-  isSelectedUser: boolean;
-  unseenMsgCount: number;
   onClickUser: () => void;
-  isOnlineUser: boolean;
+  
+  // Sidebar props
+  unseenMsgCount?: number;
+  isSelectedUser?: boolean;
+  isOnlineUser?: boolean;
 };
 const UserBar = ({
   user,
@@ -14,6 +16,7 @@ const UserBar = ({
   unseenMsgCount,
   onClickUser,
 }: UserBarProps) => {
+  console.log(unseenMsgCount)
   return (
     <div
       onClick={onClickUser}
@@ -34,7 +37,7 @@ const UserBar = ({
           <span className="text-neutal-400 text-xs">Offline</span>
         )}
       </div>
-      {unseenMsgCount > 0 && (
+      {Number(unseenMsgCount) > 0 && (
         <p className="absolute top-4 right-4 text-xs h-5 w-5 flex justify-center items-center rounded-full bg-violet-500/50">
           {unseenMsgCount}
         </p>

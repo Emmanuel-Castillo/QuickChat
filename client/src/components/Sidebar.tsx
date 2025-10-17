@@ -3,47 +3,40 @@ import assets from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useChat } from "../../context/ChatContext";
-import UserBar from "./sidebar-ui/UserBar";
-import GroupBar from "./sidebar-ui/GroupBar";
 import FilterButton from "./sidebar-ui/FilterButton";
 import OptionsBox from "./shared-ui/OptionsBox";
+import FriendsList from "./sidebar-ui/FriendsList";
+import JoinedGroupsList from "./sidebar-ui/JoinedGroupsList";
+import UserBar from "./sidebar-ui/UserBar";
+import FriendRequestList from "./sidebar-ui/FriendRequestList";
 
 const Sidebar = () => {
   const navigate = useNavigate();
   const { logout, onlineUsers } = useAuth();
   const {
-    getFriends: getUsers,
-    friends: users,
+    getFriends,
+    friends,
     selectedChat,
-    setSelectedChat,
-    unseenFriendMessages: unseenMessages,
-    setUnseenFriendMessages: setUnseenMessages,
-    joinedGroups: groups,
-    getJoinedGroups: getGroups,
-    unseenGroupMessages,
-    setUnseenGroupMessages,
+    joinedGroups,
+    getJoinedGroups,
+    friendRequests,
+    setFriendRequests,
+    retrieveFriendRequests,
   } = useChat();
 
-  const [input, setInput] = useState<string>();
-  const [filter, setFilter] = useState<"user" | "group">("user");
-  const filteredUsers = input
-    ? users.filter((user) =>
-        user.fullName.toLowerCase().includes(input.toLowerCase())
-      )
-    : users;
-  const filteredGroups = input
-    ? groups.filter((group) =>
-        group.name.toLowerCase().includes(input.toLowerCase())
-      )
-    : groups;
+  const [input, setInput] = useState<string>("");
+  const [filter, setFilter] = useState<"friend" | "group" | "requests">(
+    "friend"
+  );
 
   // When onlineUsers (list of online User ids) retrieved from AuthContext, request Users and Groups
   useEffect(() => {
-    getUsers();
+    getFriends();
   }, [onlineUsers]);
 
   useEffect(() => {
-    getGroups();
+    getJoinedGroups();
+    retrieveFriendRequests();
   }, []);
 
   return (
@@ -93,64 +86,28 @@ const Sidebar = () => {
         <div>
           <FilterButton
             buttonText="Friends"
-            isSelected={filter === "user"}
-            onClickButton={() => setFilter("user")}
+            isSelected={filter === "friend"}
+            onClickButton={() => setFilter("friend")}
           />
           <FilterButton
             buttonText="Groups"
             isSelected={filter === "group"}
             onClickButton={() => setFilter("group")}
           />
+          <FilterButton
+            buttonText="Requests"
+            isSelected={filter === "requests"}
+            onClickButton={() => setFilter("requests")}
+          />
         </div>
 
-        {/* USER/GROUP LIST */}
-        <div className="flex-1 flex flex-col border-2 border-[#282142]/50 rounded-b-xl">
-          {filter === "user" &&
-            filteredUsers.map((user, index) => (
-              <UserBar
-                key={index}
-                user={user}
-                isSelectedUser={selectedChat?._id === user._id}
-                isOnlineUser={onlineUsers.includes(user._id)}
-                unseenMsgCount={unseenMessages[user._id]}
-                onClickUser={() => {
-                  if (selectedChat?._id !== user._id) {
-                    setSelectedChat({ ...user, type: "user" });
-                    setUnseenMessages((prev) => ({
-                      ...prev,
-                      [user._id]: 0,
-                    }));
-                  }
-                }}
-              />
-            ))}
-          {filter === "group" &&
-            filteredGroups.map((group, index) => (
-              <GroupBar
-                group={group}
-                key={index}
-                isSelectedGroup={selectedChat?._id === group._id}
-                onClickGroup={() => {
-                  if (selectedChat?._id !== group._id) {
-                    setSelectedChat({ ...group, type: "group" });
-                    setUnseenGroupMessages((prev) => ({
-                      ...prev,
-                      [group._id]: 0,
-                    }));
-                  }
-                }}
-              />
-            ))}
-        </div>
-
-        {/* JOIN GROUP BUTTON */}
+        {/* USER/GROUP LIST + ACTIONS BUTTONS */}
+        {filter === "friend" && <FriendsList friends={friends} input={input} />}
         {filter === "group" && (
-          <button
-            className="bg-gradient-to-r from-purple-400 to-violet-600 text-white border-none text-sm font-light p-2 px-15 rounded-full cursor-pointer mt-4"
-            onClick={() => navigate("/join-group")}
-          >
-            Join Group
-          </button>
+          <JoinedGroupsList groups={joinedGroups} input={input} />
+        )}
+        {filter === "requests" && (
+          <FriendRequestList/>
         )}
       </div>
     </div>
