@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import UserBar from "./UserBar";
 import { useChat } from "../../../context/ChatContext";
 import { useAuth } from "../../../context/AuthContext";
+import ActionButton from "../shared-ui/ActionButton";
 
 type FriendsListProps = {
   input: string;
@@ -44,12 +45,10 @@ const FriendsList = ({ input, friends }: FriendsListProps) => {
           />
         ))}
       </div>
-      <button
-        className="bg-gradient-to-r from-purple-400 to-violet-600 text-white border-none text-sm font-light p-2 px-15 rounded-full cursor-pointer mt-4"
-        onClick={() => navigate("/add-friend")}
-      >
-        Add Friend
-      </button>
+      <ActionButton
+        buttonText="Add Friend"
+        onClickButton={() => navigate("/add-friend")}
+      />
     </div>
   );
 };

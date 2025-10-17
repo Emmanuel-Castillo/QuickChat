@@ -5,42 +5,45 @@ import CircleCross from "../shared-ui/CircleCross";
 import UserBar from "./UserBar";
 import { useNavigate } from "react-router-dom";
 import { useChat } from "../../../context/ChatContext";
+import ActionButton from "../shared-ui/ActionButton";
 
 const FriendRequestList = () => {
   const { onlineUsers, axios } = useAuth();
-  const { friendRequests, setFriendRequests, setFriends } = useChat()
+  const { friendRequests, setFriendRequests, setFriends } = useChat();
   const navigate = useNavigate();
 
   const denyFriendRequest = async (frId: string) => {
-    const toastId = toast.loading("Denying friend request...")
+    const toastId = toast.loading("Denying friend request...");
     try {
-      const {data} = await axios.delete(`/api/friends/remove-request/${frId}`)
+      const { data } = await axios.delete(
+        `/api/friends/remove-request/${frId}`
+      );
       if (data.success) {
-        toast.success("Friend request denied.", {id: toastId})
-        setFriendRequests((prevFRs) => prevFRs.filter(p => p._id != frId))
+        toast.success("Friend request denied.", { id: toastId });
+        setFriendRequests((prevFRs) => prevFRs.filter((p) => p._id != frId));
       } else {
-        toast.error(data.error, {id: toastId})
+        toast.error(data.error, { id: toastId });
       }
     } catch (error: any) {
-      toast.error(error.message, {id: toastId})
+      toast.error(error.message, { id: toastId });
     }
-  }
-  
+  };
+
   const acceptFriendRequest = async (fr: any) => {
-    console.log
-    const toastId = toast.loading("Accepting friend request...")
+    console.log;
+    const toastId = toast.loading("Accepting friend request...");
     try {
-      const {data} = await axios.post(`/api/friends/add/${fr.senderId._id}`)
+      const { data } = await axios.post(`/api/friends/add/${fr.senderId._id}`);
       if (data.success) {
-        toast.success("Accepted friend request!", {id: toastId})
-        setFriendRequests((prevFRs) => prevFRs.filter(p => p._id != fr._id))
-        setFriends((prevFriends) => [...prevFriends, fr.senderId])
+        toast.success("Accepted friend request!", { id: toastId });
+        setFriendRequests((prevFRs) => prevFRs.filter((p) => p._id != fr._id));
+        setFriends((prevFriends) => [...prevFriends, fr.senderId]);
       }
     } catch (error: any) {
-      toast.error(error.message, {id: toastId})
+      toast.error(error.message, { id: toastId });
     }
-  }
-  
+  };
+
   return (
     <div className="flex-1 flex flex-col ">
       <div className="flex-1 flex flex-col border-2 border-[#282142]/50 rounded-b-xl">
@@ -54,23 +57,21 @@ const FriendRequestList = () => {
                 onClickUser={() => {}}
               />
               <div className="flex gap-2 pr-2">
-                <CircleCross onClickButton={() => denyFriendRequest(f._id)}/>
-                <CircleCheck onClickButton={() => acceptFriendRequest(f)}/>
+                <CircleCross onClickButton={() => denyFriendRequest(f._id)} />
+                <CircleCheck onClickButton={() => acceptFriendRequest(f)} />
               </div>
             </div>
           ))
         ) : (
-          <div className="flex-1 flex items-center justify-center">
+          <div className="flex-1 flex items-center justify-center p-2">
             <p className="text-white">No friend requests atm.</p>
           </div>
         )}
       </div>
-      <button
-        className="bg-gradient-to-r from-purple-400 to-violet-600 text-white border-none text-sm font-light p-2 px-15 rounded-full cursor-pointer mt-4"
-        onClick={() => navigate("/add-friend")}
-      >
-        Add Friend
-      </button>
+      <ActionButton
+        buttonText="Add Friend"
+        onClickButton={() => navigate("/add-friend")}
+      />
     </div>
   );
 };

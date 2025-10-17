@@ -83,7 +83,7 @@ const Sidebar = () => {
       {/* LIST */}
       <div className="flex-1 flex flex-col ">
         {/* FILTER BUTTONS */}
-        <div>
+        <div className="flex flex-wrap">
           <FilterButton
             buttonText="Friends"
             isSelected={filter === "friend"}

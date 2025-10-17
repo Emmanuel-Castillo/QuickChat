@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import GroupBar from "./GroupBar";
 import { useChat } from "../../../context/ChatContext";
+import ActionButton from "../shared-ui/ActionButton";
 
 type JoinedGroupsListProps = {
   groups: any[];
@@ -16,7 +17,7 @@ const JoinedGroupsList = ({ input, groups }: JoinedGroupsListProps) => {
       )
     : groups;
   return (
-    <div  className="flex-1 flex flex-col ">
+    <div className="flex-1 flex flex-col ">
       <div className="flex-1 flex flex-col border-2 border-[#282142]/50 rounded-b-xl">
         {filteredGroups.map((group, index) => (
           <GroupBar
@@ -35,12 +36,11 @@ const JoinedGroupsList = ({ input, groups }: JoinedGroupsListProps) => {
           />
         ))}
       </div>
-      <button
-        className="bg-gradient-to-r from-purple-400 to-violet-600 text-white border-none text-sm font-light p-2 px-15 rounded-full cursor-pointer mt-4"
-        onClick={() => navigate("/join-group")}
-      >
-        Join Group
-      </button>
+
+      <ActionButton
+        buttonText="Join Group"
+        onClickButton={() => navigate("/join-group")}
+      />
     </div>
   );
 };

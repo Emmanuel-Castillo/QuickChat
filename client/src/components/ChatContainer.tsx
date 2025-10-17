@@ -23,7 +23,7 @@ const ChatContainer = () => {
   const optionBoxActions: Action[] =
     selectedChat && selectedChat.type === "group"
       ? [{ text: "Leave Group", onClickAction: () => leaveGroup(selectedChat._id) }]
-      : [];
+      : [{text: "Remove Friend", onClickAction: () => {}}];
 
   return selectedChat ? (
     <div

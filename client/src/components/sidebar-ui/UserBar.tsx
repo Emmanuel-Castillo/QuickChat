@@ -8,6 +8,9 @@ type UserBarProps = {
   unseenMsgCount?: number;
   isSelectedUser?: boolean;
   isOnlineUser?: boolean;
+
+  // AddFriend props
+  alreadyFriends?: boolean;
 };
 const UserBar = ({
   user,
@@ -15,6 +18,7 @@ const UserBar = ({
   isOnlineUser,
   unseenMsgCount,
   onClickUser,
+  alreadyFriends
 }: UserBarProps) => {
   console.log(unseenMsgCount)
   return (
@@ -42,6 +46,7 @@ const UserBar = ({
           {unseenMsgCount}
         </p>
       )}
+      {alreadyFriends && <p className="ml-auto">Friend</p>}
     </div>
   );
 };

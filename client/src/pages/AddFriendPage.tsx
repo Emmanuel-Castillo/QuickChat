@@ -94,7 +94,10 @@ const AddFriendPage = () => {
             <UserBar
               user={u}
               isOnlineUser={onlineUsers.includes(u._id)}
-              onClickUser={() => setSelectedUser(u)}
+              onClickUser={() => {
+                if (!friends.find((f) => f._id === u._id)) setSelectedUser(u);
+              }}
+              alreadyFriends={friends.find((f) => f._id === u._id)}
             />
           ))
         )}
