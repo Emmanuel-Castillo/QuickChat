@@ -1,6 +1,6 @@
 import React from "react";
 import assets from "../../assets/assets";
-import OptionsBox, { Action } from "../shared-ui/OptionsBox";
+import OptionsBox, { Action } from "../Shared/OptionsBox";
 
 type HeaderProps = {
   chatImage: string;

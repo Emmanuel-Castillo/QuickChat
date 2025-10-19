@@ -5,7 +5,6 @@ import Message from "../models/Message.js";
 import User from "../models/User.js";
 import { io, userSocketMap } from "../server.js";
 
-// EDITED: 10/15/2025
 export const getFriendsPlusUnseenMessages = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -27,15 +26,13 @@ export const getFriendsPlusUnseenMessages = async (req, res) => {
     });
 
     await Promise.all(promises);
-    res.json({ success: true, users: friends, unseenMessages });
+    res.json({ success: true, friends: friends, unseenMessages });
   } catch (error) {
     console.log(error.message);
     res.json({ success: false, error: error.message });
   }
 };
 
-// EDITED: 10/15/2025
-// Get all messages for selected user
 export const getFriendMessages = async (req, res) => {
   try {
     const { id: friendId } = req.params;
@@ -60,8 +57,6 @@ export const getFriendMessages = async (req, res) => {
   }
 };
 
-// EDITED: 10/15/2025
-// api to mark message as seen using message id
 export const markFriendMessageAsSeen = async (req, res) => {
   try {
     const { id } = req.params;
@@ -73,8 +68,6 @@ export const markFriendMessageAsSeen = async (req, res) => {
   }
 };
 
-// EDITED: 10/15/2025
-// Send message to selected user
 export const sendMessageToFriend = async (req, res) => {
   try {
     const { text, image } = req.body;
@@ -97,7 +90,7 @@ export const sendMessageToFriend = async (req, res) => {
     // Emit the new message to the receiver's socket
     const receiverSocketId = userSocketMap[receiverId];
     if (receiverSocketId) {
-      io.to(receiverSocketId).emit("newMessage", newMessage);
+      io.to(receiverSocketId).emit("newFriendMessage", newMessage);
     }
 
     res.json({ success: true, newMessage });

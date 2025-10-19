@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import ActionButton from "../shared-ui/ActionButton";
-import ModalContainer from "../shared-ui/ModalContainer";
+import ActionButton from "../Shared/ActionButton";
+import ModalContainer from "../Shared/ModalContainer";
 
 const CreateGroupModal = ({
   onClickCreate,

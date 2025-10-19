@@ -1,9 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import UserBar from "./UserBar";
+import UserBar from "../Shared/UserBar";
 import { useChat } from "../../../context/ChatContext";
 import { useAuth } from "../../../context/AuthContext";
-import ActionButton from "../shared-ui/ActionButton";
+import ActionButton from "../Shared/ActionButton";
 
 type FriendsListProps = {
   input: string;
@@ -24,7 +24,7 @@ const FriendsList = ({ input, friends }: FriendsListProps) => {
       )
     : friends;
   return (
-    <div className="flex-1 flex flex-col ">
+    <div className="flex-1 flex flex-col gap-4">
       <div className="flex-1 flex flex-col border-2 border-[#282142]/50 rounded-b-xl">
         {filteredFriends.map((friend, index) => (
           <UserBar

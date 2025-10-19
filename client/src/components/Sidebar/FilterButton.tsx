@@ -8,7 +8,7 @@ type FilterButtonProps = {
 const FilterButton = ({ buttonText, isSelected, onClickButton }: FilterButtonProps) => {
   return (
     <button
-      className={`w-[100%] xl:w-1/3  p-3 cursor-pointer ${isSelected && "bg-[#282142]/50"}`}
+      className={`flex p-3 cursor-pointer justify-center ${isSelected && "bg-[#282142]/50"}`}
       onClick={onClickButton}
     >
       {buttonText}

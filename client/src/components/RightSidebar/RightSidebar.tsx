@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import assets, { imagesDummyData } from "../assets/assets";
-import { useChat } from "../../context/ChatContext";
-import { useAuth } from "../../context/AuthContext";
-import RightSidebarHeader from "./rightsidebar-ui/RightSidebarHeader";
-import UserBar from "./sidebar-ui/UserBar";
-import FilterButton from "./sidebar-ui/FilterButton";
-import MediaContent from "./rightsidebar-ui/MediaContent";
-import GroupMembersContent from "./rightsidebar-ui/GroupMembersContent";
-import RightSidebarGroupContent from "./rightsidebar-ui/RightSidebarGroupContent";
+import assets, { imagesDummyData } from "../../assets/assets";
+import { useChat } from "../../../context/ChatContext";
+import { useAuth } from "../../../context/AuthContext";
+import RightSidebarHeader from "./Header";
+import UserBar from "../Shared/UserBar";
+import FilterButton from "../Sidebar/FilterButton";
+import MediaContent from "./MediaContent";
+import GroupMembersContent from "./GroupMembersContent";
+import RightSidebarGroupContent from "./GroupContent";
 
 const RightSidebar = () => {
   const { selectedChat, messages } = useChat();

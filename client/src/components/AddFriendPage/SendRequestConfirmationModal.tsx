@@ -1,12 +1,12 @@
-import ActionButton from "../shared-ui/ActionButton";
-import ModalContainer from "../shared-ui/ModalContainer";
+import ActionButton from "../Shared/ActionButton";
+import ModalContainer from "../Shared/ModalContainer";
 
-const ConfirmationModal = ({
-  group,
+const SendRequestConfirmationModal = ({
+  user,
   onClickNo,
   onClickYes,
 }: {
-  group: any;
+  user: any;
   onClickNo: () => void;
   onClickYes: () => void;
 }) => {
@@ -15,8 +15,8 @@ const ConfirmationModal = ({
       <div className="absolute h-screen w-screen bg-[#000000]/60 z-10 flex justify-center items-center px-2">
         <div className=" flex flex-col items-center gap-4 backdrop-blur-2xl text-gray-300 border-2 border-gray-600 rounded-lg overflow-y-scroll p-8">
           <h2 className="text-wrap">
-            Are you sure you want to join{" "}
-            <span className="text-violet-500">{group.name}</span>?
+            Send friend request to{" "}
+            <span className="text-violet-500">{user.fullName}</span>?
           </h2>
           <div className="flex flex-wrap gap-4">
             <ActionButton
@@ -38,4 +38,4 @@ const ConfirmationModal = ({
   );
 };
 
-export default ConfirmationModal;
+export default SendRequestConfirmationModal;

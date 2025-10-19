@@ -5,37 +5,33 @@ import Group from "../models/Group.js";
 import GroupMessage from "../models/GroupMessage.js";
 import { io, userSocketMap } from "../server.js";
 
-// REVIEWED: 10/15/2025
-// Fetch all joined groups + unseen messages count for Sidebar
-export const getJoinedGroupsPlusUnseenMessages = async (req, res) => {
+export const getJoinedGroupsPlusUnseenGroupMessages = async (req, res) => {
   try {
     const userId = req.user._id;
     const joinedGroups = await Group.find({
       members: { $in: [userId] },
-    }).populate("members");
+    }).populate("members", "-password");
 
     // Count number of messsages not seen
-    const unseenMessages = {};
+    const unseenGroupMessages = {};
     const promises = joinedGroups.map(async (group) => {
       const messages = await GroupMessage.find({
         receiverId: group._id,
         seen: { $nin: [userId] },
       });
       if (messages.length > 0) {
-        unseenMessages[group._id] = messages.length;
+        unseenGroupMessages[group._id] = messages.length;
       }
     });
 
     await Promise.all(promises);
-    res.json({ success: true, groups: joinedGroups, unseenMessages });
+    res.json({ success: true, joinedGroups,  unseenGroupMessages });
   } catch (error) {
     console.log(error.message);
     res.json({ success: false, message: error.message });
   }
 };
 
-// EDITED: 10/15/2025
-// Get all messages for selected group
 export const getGroupMessages = async (req, res) => {
   try {
     const { id: selectedGroupId } = req.params;
@@ -43,7 +39,7 @@ export const getGroupMessages = async (req, res) => {
 
     const messages = await GroupMessage.find({
       receiverId: selectedGroupId,
-    }).populate("senderId");
+    }).populate("senderId", "-password");
 
     // Mark messages as read
     await GroupMessage.updateMany(
@@ -57,8 +53,6 @@ export const getGroupMessages = async (req, res) => {
   }
 };
 
-// EDITED: 10/15/2025
-// api to mark message as seen using message id
 export const markGroupMessageAsSeen = async (req, res) => {
   try {
     const myId = req.user._id;
@@ -73,8 +67,6 @@ export const markGroupMessageAsSeen = async (req, res) => {
   }
 };
 
-// EDITED: 10/15/2025
-// Send message to selected group
 export const sendGroupMessage = async (req, res) => {
   try {
     const { text, image } = req.body;
@@ -97,7 +89,7 @@ export const sendGroupMessage = async (req, res) => {
 
     const populatedMessage = await newMessage.populate("senderId");
 
-    // Broadcast to all other users the new message
+    // Broadcast to all other users the new message, except this user (message added in React state)
     const sockets = await io.fetchSockets();
     const senderSocket = sockets.find((s) => s.id === userSocketMap[senderId]);
     if (senderSocket) {

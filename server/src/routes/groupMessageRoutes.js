@@ -2,7 +2,7 @@ import express from "express";
 import { protectRoute } from "../middleware/auth.js";
 import {
   getGroupMessages,
-  getJoinedGroupsPlusUnseenMessages,
+  getJoinedGroupsPlusUnseenGroupMessages,
   markGroupMessageAsSeen,
   sendGroupMessage,
 } from "../controllers/GroupMessageController.js";
@@ -12,7 +12,7 @@ const groupMsgRouter = express.Router();
 groupMsgRouter.get(
   "/",
   protectRoute,
-  getJoinedGroupsPlusUnseenMessages
+  getJoinedGroupsPlusUnseenGroupMessages
 );
 groupMsgRouter.get("/:id", protectRoute, getGroupMessages);
 groupMsgRouter.put("/mark/:id", protectRoute, markGroupMessageAsSeen);

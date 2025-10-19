@@ -1,8 +1,6 @@
 import Group from "../models/Group.js";
 import User from "../models/User.js";
 
-// EDITED: 10/15/2025
-// Controller to requests all groups
 export const getAllGroups = async (req, res) => {
   try {
     const groups = await Group.find({});
@@ -14,16 +12,13 @@ export const getAllGroups = async (req, res) => {
   }
 };
 
-// REVIEWED: 10/15/2025
-// Controller to request specific group
 export const getGroup = async (req, res) => {
   try {
     const { id } = req.params;
 
     const group = await Group.findById(id);
     if (!group) {
-      const errMsg = "Group not found!";
-      throw new Error(errMsg);
+      throw new Error("Group not found!");
     }
 
     res.json({ success: true, group: group });
@@ -33,8 +28,6 @@ export const getGroup = async (req, res) => {
   }
 };
 
-// EDITED: 10/15/2025
-// Controller to create new group
 export const createGroup = async (req, res) => {
   try {
     const myId = req.user._id;
@@ -42,8 +35,7 @@ export const createGroup = async (req, res) => {
 
     const groupWithSameName = await Group.findOne({ name: groupName });
     if (groupWithSameName) {
-      const errMsg = `Group exists with same name: ${groupWithSameName.name}`;
-      throw new Error(errMsg);
+      throw new Error(`Group exists with same name: ${groupWithSameName.name}`);
     }
 
     const newGroup = await Group.create({
@@ -61,8 +53,6 @@ export const createGroup = async (req, res) => {
   }
 };
 
-// EDITED: 10/15/2025
-// Controller to join a group
 export const joinGroup = async (req, res) => {
   try {
     const myId = req.user._id;
@@ -71,13 +61,12 @@ export const joinGroup = async (req, res) => {
     const user = await User.findById(myId);
     const group = await Group.findById(groupId);
     if (!user || !group) {
-      const errMsg = "User or Group not found.";
-      throw new Error(errMsg);
+      throw new Error("User or Group not found.");
     }
 
+    // Check if user has already joined group
     if (user.groups.includes(groupId) && group.members.includes(user._id)) {
-      const errMsg = "User has already joined this group";
-      throw new Error(errMsg);
+      throw new Error("User has already joined this group");
     }
 
     user.groups.push(groupId);
@@ -92,8 +81,6 @@ export const joinGroup = async (req, res) => {
   }
 };
 
-// REVIEWED: 10/15/2025
-// Controller to leave a group
 export const leaveGroup = async (req, res) => {
   try {
     const myId = req.user._id;

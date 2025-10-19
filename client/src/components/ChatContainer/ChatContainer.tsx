@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
-import assets, { messagesDummyData } from "../assets/assets";
-import { formatMessageTime } from "../lib/utils";
-import { useChat } from "../../context/ChatContext";
-import { useAuth } from "../../context/AuthContext";
+import assets, { messagesDummyData } from "../../assets/assets";
+import { formatMessageTime } from "../../lib/utils";
+import { useChat } from "../../../context/ChatContext";
+import { useAuth } from "../../../context/AuthContext";
 import toast from "react-hot-toast";
-import SingleChatMessages from "./chatcontainer-ui/SingleChatMessages";
-import GroupChatMessages from "./chatcontainer-ui/GroupChatMessages";
-import Header from "./chatcontainer-ui/Header";
-import { UserInput } from "./chatcontainer-ui/UserInput";
-import { Action } from "./shared-ui/OptionsBox";
+import SingleChatMessages from "./SingleChatMessages";
+import GroupChatMessages from "./GroupChatMessages";
+import Header from "./Header";
+import { UserInput } from "./UserInput";
+import { Action } from "../Shared/OptionsBox";
 
 const ChatContainer = () => {
   const {

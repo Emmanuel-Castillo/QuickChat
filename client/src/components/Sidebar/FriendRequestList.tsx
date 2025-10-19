@@ -1,11 +1,11 @@
 import toast from "react-hot-toast";
 import { useAuth } from "../../../context/AuthContext";
-import CircleCheck from "../shared-ui/CircleCheck";
-import CircleCross from "../shared-ui/CircleCross";
-import UserBar from "./UserBar";
+import CircleCheck from "../Shared/CircleCheck";
+import CircleCross from "../Shared/CircleCross";
+import UserBar from "../Shared/UserBar";
 import { useNavigate } from "react-router-dom";
 import { useChat } from "../../../context/ChatContext";
-import ActionButton from "../shared-ui/ActionButton";
+import ActionButton from "../Shared/ActionButton";
 
 const FriendRequestList = () => {
   const { onlineUsers, axios } = useAuth();
@@ -45,7 +45,7 @@ const FriendRequestList = () => {
   };
 
   return (
-    <div className="flex-1 flex flex-col ">
+    <div className="flex-1 flex flex-col gap-4">
       <div className="flex-1 flex flex-col border-2 border-[#282142]/50 rounded-b-xl">
         {friendRequests.length > 0 ? (
           friendRequests.map((f, index) => (

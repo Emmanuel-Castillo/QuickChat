@@ -2,15 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useChat } from "../../context/ChatContext";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
-import GroupBar from "../components/sidebar-ui/GroupBar";
+import GroupBar from "../components/Shared/GroupBar";
 import assets from "../assets/assets";
-import ActionButton from "../components/shared-ui/ActionButton";
+import ActionButton from "../components/Shared/ActionButton";
 import { filterGroups } from "../lib/utils";
 import { useNavigate } from "react-router-dom";
-import CreateGroupModal from "../components/joingrouppage-ui/CreateGroupModal";
-import ConfirmationModal from "../components/joingrouppage-ui/ConfirmationModal";
-import SendRequestConfirmationModal from "../components/addfriendpage-ui/SendRequestConfirmationModal";
-import UserBar from "../components/sidebar-ui/UserBar";
+import CreateGroupModal from "../components/JoinGroupPage/CreateGroupModal";
+import ConfirmationModal from "../components/JoinGroupPage/ConfirmationModal";
+import SendRequestConfirmationModal from "../components/AddFriendPage/SendRequestConfirmationModal";
+import UserBar from "../components/Shared/UserBar";
 
 const AddFriendPage = () => {
   const { authUser, axios, onlineUsers } = useAuth();

@@ -16,7 +16,7 @@ const ActionButton = ({
 }: ActionButtonProps) => {
   return (
     <button
-      className={`mt-auto bg-gradient-to-r ${gradientLeft} ${gradientRight} ${
+      className={`bg-gradient-to-r ${gradientLeft} ${gradientRight} ${
         disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"
       } text-white border-none text-sm font-light p-2 px-15 rounded-full`}
       onClick={onClickButton}

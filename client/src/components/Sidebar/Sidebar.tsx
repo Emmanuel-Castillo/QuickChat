@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import assets from "../assets/assets";
+import assets from "../../assets/assets";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-import { useChat } from "../../context/ChatContext";
-import FilterButton from "./sidebar-ui/FilterButton";
-import OptionsBox from "./shared-ui/OptionsBox";
-import FriendsList from "./sidebar-ui/FriendsList";
-import JoinedGroupsList from "./sidebar-ui/JoinedGroupsList";
-import UserBar from "./sidebar-ui/UserBar";
-import FriendRequestList from "./sidebar-ui/FriendRequestList";
+import { useAuth } from "../../../context/AuthContext";
+import { useChat } from "../../../context/ChatContext";
+import FilterButton from "./FilterButton";
+import OptionsBox from "../Shared/OptionsBox";
+import FriendsList from "./FriendsList";
+import JoinedGroupsList from "./JoinedGroupsList";
+import UserBar from "../Shared/UserBar";
+import FriendRequestList from "./FriendRequestList";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -83,7 +83,7 @@ const Sidebar = () => {
       {/* LIST */}
       <div className="flex-1 flex flex-col ">
         {/* FILTER BUTTONS */}
-        <div className="flex flex-wrap">
+        <div className="grid grid-cols-1 xl:grid-cols-3">
           <FilterButton
             buttonText="Friends"
             isSelected={filter === "friend"}

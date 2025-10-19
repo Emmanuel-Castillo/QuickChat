@@ -3,7 +3,6 @@ import { generateToken } from "../lib/utils.js";
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 
-// Signup a new user
 export const signUp = async (req, res) => {
   const { fullName, email, password, bio } = req.body;
 
@@ -39,7 +38,6 @@ export const signUp = async (req, res) => {
   }
 };
 
-// Login a user
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -57,12 +55,10 @@ export const login = async (req, res) => {
   }
 };
 
-// Controller to check if user is authenticated
 export const checkAuth = (req, res) => {
   res.json({ success: true, user: req.user });
 };
 
-// Controller to update user profile details
 export const updateProfile = async (req, res) => {
   try {
     const { profilePic, bio, fullName } = req.body;
@@ -101,7 +97,6 @@ export const updateProfile = async (req, res) => {
   }
 };
 
-// Controller to get User
 export const getUser = async (req, res) => {
   try {
     const { id } = req.params;
@@ -120,7 +115,7 @@ export const getUser = async (req, res) => {
 export const getAllUsers = async (req, res) => {
   try {
     const myId = req.user._id;
-    const users = await User.find({ _id: { $ne: myId } });
+    const users = await User.find({ _id: { $ne: myId } }).select("-password");
 
     res.json({ success: true, users: users });
   } catch (error) {

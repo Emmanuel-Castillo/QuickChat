@@ -1,5 +1,5 @@
 import React from "react";
-import UserBar from "../sidebar-ui/UserBar";
+import UserBar from "../Shared/UserBar";
 
 const GroupMembersContent = ({ members }: { members: any[] }) => {
   return (

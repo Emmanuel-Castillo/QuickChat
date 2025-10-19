@@ -2,7 +2,7 @@ import FriendRequest from "../models/FriendRequest.js";
 import User from "../models/User.js";
 import { io, userSocketMap } from "../server.js";
 
-// CREATED 10/15/2025
+// TBD: SEND SIGNAL TO ADDED FRIEND THROUGH SOCKET THAT REQUEST HAS BEEN ACCEPTED, AND TO ADD CHAT WITH USER IN REAL TIME
 export const addFriend = async (req, res) => {
   try {
     const myId = req.user._id;
@@ -26,7 +26,7 @@ export const addFriend = async (req, res) => {
   }
 };
 
-// CREATED 10/15/2025
+// TBD: SEND SIGNAL TO REMOVED FRIEND THROUGH SOCKET TO REMOVE CHAT WITH USER
 export const removeFriend = async (req, res) => {
   try {
     const myId = req.user._id;
@@ -42,7 +42,6 @@ export const removeFriend = async (req, res) => {
   }
 };
 
-// CREATED 10/15/2025
 export const sendFriendRequest = async (req, res) => {
   try {
     const myId = req.user._id;
@@ -54,6 +53,16 @@ export const sendFriendRequest = async (req, res) => {
       receiverId: userId,
     });
     if (existingFR.length > 0) throw new Error("Already sent friend request.");
+
+    // Check if already friends
+    const myUser = await User.findById(myId);
+    const otherUser = await User.findById(userId);
+    if (!myUser || !otherUser) throw new Error("Invalid ids.");
+    if (
+      myUser.friends.includes(otherUser._id) ||
+      otherUser.friends.includes(myUser._id)
+    )
+      throw new Error("Already friends.");
 
     const newFriendRequest = await FriendRequest.create({
       senderId: myId,
@@ -89,7 +98,6 @@ export const deleteFriendRequest = async (req, res) => {
   }
 };
 
-// CREATED 10/15/2025
 export const getFriendRequests = async (req, res) => {
   try {
     const myId = req.user._id;

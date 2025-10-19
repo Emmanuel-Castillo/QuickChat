@@ -1,8 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import GroupBar from "./GroupBar";
+import GroupBar from "../Shared/GroupBar";
 import { useChat } from "../../../context/ChatContext";
-import ActionButton from "../shared-ui/ActionButton";
+import ActionButton from "../Shared/ActionButton";
 
 type JoinedGroupsListProps = {
   groups: any[];
@@ -17,7 +17,7 @@ const JoinedGroupsList = ({ input, groups }: JoinedGroupsListProps) => {
       )
     : groups;
   return (
-    <div className="flex-1 flex flex-col ">
+    <div className="flex-1 flex flex-col gap-4">
       <div className="flex-1 flex flex-col border-2 border-[#282142]/50 rounded-b-xl">
         {filteredGroups.map((group, index) => (
           <GroupBar

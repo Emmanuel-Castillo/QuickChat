@@ -76,12 +76,12 @@ export const ChatProvider = ({
     try {
       const { data } = await axios.get("/api/group-messages/");
       if (data.success) {
-        setJoinedGroups(data.groups);
-        setUnseenGroupMessages(data.unseenMessages);
+        setJoinedGroups(data.joinedGroups);
+        setUnseenGroupMessages(data.unseenGroupMessages);
 
         // Socket joins each room
         socket &&
-          data.groups.map((g: any) => {
+          data.joinedGroups.map((g: any) => {
             socket.emit("joinRoom", g._id);
           });
       }
@@ -95,7 +95,7 @@ export const ChatProvider = ({
     try {
       const { data } = await axios.get("/api/friend-messages");
       if (data.success) {
-        setFriends(data.users);
+        setFriends(data.friends);
         setUnseenFriendMessages(data.unseenMessages);
       }
     } catch (error: any) {
@@ -172,7 +172,7 @@ export const ChatProvider = ({
   // Get messages in real-time
   const subscribeToFriendMessages = async () => {
     if (!socket) return;
-    socket.on("newMessage", (newMessage: any) => {
+    socket.on("newFriendMessage", (newMessage: any) => {
       // If in chat container with selected friend, and received a message from them
       // Set newMessage into messages, and make it read
       if (selectedChat && newMessage.senderId === selectedChat._id) {
