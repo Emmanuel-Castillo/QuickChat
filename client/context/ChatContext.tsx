@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
 import toast from "react-hot-toast";
+import { FriendRequest, Group, User } from "../src/types/DTO";
 
 interface ChatContextProps {
   // Shared
@@ -12,10 +13,10 @@ interface ChatContextProps {
   setSelectedChat: React.Dispatch<any>;
 
   // Single messaging user states
-  friends: any[];
-  setFriends: React.Dispatch<React.SetStateAction<any[]>>;
-  friendRequests: any[];
-  setFriendRequests: React.Dispatch<React.SetStateAction<any[]>>;
+  friends: User[];
+  setFriends: React.Dispatch<React.SetStateAction<User[]>>;
+  friendRequests: FriendRequest[];
+  setFriendRequests: React.Dispatch<React.SetStateAction<FriendRequest[]>>;
   retrieveFriendRequests: () => void;
   getFriends: () => void;
   getFriendMessages: (userId: string) => void;
@@ -24,10 +25,10 @@ interface ChatContextProps {
   setUnseenFriendMessages: React.Dispatch<React.SetStateAction<{}>>;
 
   // Group states
-  joinedGroups: any[];
+  joinedGroups: Group[];
   getJoinedGroups: () => void;
   getGroupMessages: (groupId: string) => void;
-  leaveGroup: (groupId: number) => void;
+  leaveGroup: (groupId: string) => void;
   sendMessageToGroup: (messageData: any) => void;
   unseenGroupMessages: any;
   setUnseenGroupMessages: React.Dispatch<React.SetStateAction<{}>>;
@@ -48,17 +49,17 @@ export const ChatProvider = ({
   const [viewRightSidebarMobile, setViewRightSidebarMobile] = useState(false);
 
   // FRIEND STATES
-  const [friends, setFriends] = useState<any[]>([]);
-  const [friendRequests, setFriendRequests] = useState<any[]>([]);
+  const [friends, setFriends] = useState<User[]>([]);
+  const [friendRequests, setFriendRequests] = useState<FriendRequest[]>([]);
   const [unseenFriendMessages, setUnseenFriendMessages] = useState({});
 
   // GROUP STATES
-  const [joinedGroups, setJoinedGroups] = useState<any[]>([]);
+  const [joinedGroups, setJoinedGroups] = useState<Group[]>([]);
   const [unseenGroupMessages, setUnseenGroupMessages] = useState({});
 
-  const { authUser, socket, axios } = useAuth();
+  const { socket, axios } = useAuth();
 
-  const leaveGroup = async (groupId: number) => {
+  const leaveGroup = async (groupId: string) => {
     try {
       const { data } = await axios.delete(`/api/groups/leave/${groupId}`);
       if (data.success) {

@@ -2,13 +2,14 @@ import { createContext, useContext, useEffect, useState } from "react";
 import axios, { AxiosStatic } from "axios";
 import toast from "react-hot-toast";
 import { Socket, io } from "socket.io-client";
+import { User } from "../src/types/DTO";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 axios.defaults.baseURL = backendUrl;
 
 interface AuthContextType {
   axios: AxiosStatic;
-  authUser: any | null;
+  authUser: User | null;
   onlineUsers: number[];
   socket: Socket | null;
   login: (state: "signup" | "login", credentials: Object) => void;
@@ -25,7 +26,7 @@ export const AuthProvider = ({
   children: React.ReactElement;
 }) => {
   const [token, setToken] = useState(localStorage.getItem("token"));
-  const [authUser, setAuthUser] = useState(null);
+  const [authUser, setAuthUser] = useState<User | null>(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [socket, setSocket] = useState<Socket | null>(null);
 
@@ -55,7 +56,7 @@ export const AuthProvider = ({
         setToken(data.token);
         toast.success(data.message);
       } else {
-        toast.error(data.message);
+        toast.error(data.error);
       }
     } catch (error: any) {
       toast.error(error.message);
